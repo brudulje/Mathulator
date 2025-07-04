@@ -16,26 +16,29 @@ struct ContentView: View {
 
     let numberOfTasks = 5
 
-    var body: some View {
-        VStack(spacing: 10) {
+var body: some View {
+    GeometryReader { geometry in
+        VStack(spacing: 6) {
             // Top Row: Logo and Menu
             HStack {
                 Spacer()
                 Text("Matteboka")
-                    .font(.title)
+//
+                    .font(.title3)
                     .padding()
                     .background(Color.blue)
                     .foregroundColor(.white)
                     .clipShape(Capsule())
                 Spacer()
-                Button("=") {
-                    // Placeholder for settings or menu
-                }
-                .font(.title)
-                .padding()
-                .background(Color.green)
-                .clipShape(RoundedRectangle(cornerRadius: 15))
+//                Button("=") {
+//                    // Placeholder for settings or menu
+//                }
+//                .font(.title)
+//                .padding()
+//                .background(Color.green)
+//                .clipShape(RoundedRectangle(cornerRadius: 15))
             }
+//            .frame(maxHeight: geometry.size.height * 0.07)
 
             // History + Score
             HStack {
@@ -47,7 +50,7 @@ struct ContentView: View {
                             Image(systemName: success ? "checkmark.circle.fill" : "xmark.circle.fill")
                                 .foregroundColor(success ? .green : .red)
                             Text("\(problem.num1) \(problem.symbol) \(problem.num2) = \(problem.answer)")
-                                .frame(maxWidth: .infinity, minHeight: 30, maxHeight: 35, alignment: .leading)
+                                .frame(maxWidth: .infinity, minHeight: 14, maxHeight: geometry.size.height * 0.03, alignment: .leading)
                                 .padding(.leading, 5)
                                 .background(Color.black)
                                 .foregroundColor(.white)
@@ -68,7 +71,7 @@ struct ContentView: View {
                     .padding(.top, 10)
                 }
             }
-            .frame(height: 200)
+            .frame(height: geometry.size.height * 0.18)
             .padding()
             .background(Color.gray)
 
@@ -77,7 +80,7 @@ struct ContentView: View {
                 Text("\(currentProblem.num1) \(currentProblem.symbol) \(currentProblem.num2) =")
                     .font(.largeTitle)
                     .padding()
-                    .frame(maxWidth: .infinity)
+                    .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.1 )
                     .background(Color.black)
                     .foregroundColor(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
@@ -86,33 +89,35 @@ struct ContentView: View {
                 }) {
                     Text(userInput.isEmpty ? "?" : userInput)
                         .font(userInput.count > 6 ? .caption : (userInput.count > 4 ? .title2 : .largeTitle))
-                        .padding()
-                        .frame(width: 120)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .background(Color.black)
                         .foregroundColor(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
                 }
+                .frame(width: geometry.size.width * 0.25)
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+               
             }
             .padding(.horizontal)
+            .frame(height: geometry.size.height * 0.10)
 
             // Numpad
             VStack(spacing: 3) {
                 ForEach([[7,8,9],[4,5,6],[1,2,3]], id: \.self) { row in
                     HStack(spacing: 10) {
                         ForEach(row, id: \.self) { num in
-                            numButton(String(num))
+                            numButton(String(num), geometry: geometry)
                         }
                     }
                 }
 
                 HStack(spacing: 10) {
-                    numButton("-")
-                    numButton("0")
+                    numButton("-", geometry: geometry)
+                    numButton("0", geometry: geometry)
                     Button("Svar") {
                         submitAnswer()
                     }
                     .font(.title2)
-                    .frame(width: 80, height: 60)
+                    .frame(width: geometry.size.width * 0.2, height: geometry.size.height * 0.07)
                     .background(Color.orange)
                     .foregroundColor(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 15))
@@ -120,6 +125,7 @@ struct ContentView: View {
             }
             .padding()
             .background(Color.gray)
+            .frame(height: geometry.size.height * 0.32)
 
             // Difficulty Slider
             VStack {
@@ -139,6 +145,7 @@ struct ContentView: View {
                         .offset(x: xOffset, y: -20)
                 }
             }
+            .frame(height: geometry.size.height * 0.04)
 
             // Operator Selection
             HStack {
@@ -147,7 +154,7 @@ struct ContentView: View {
                         selectedOperator = op
                         newProblem()
                     }
-                    .frame(width: 80, height: 60)
+                    .frame(width: geometry.size.width * 0.21, height: geometry.size.height * 0.08)
                     .font(.title)
                     .background(op == selectedOperator ? Color.purple : Color.pink)
                     .foregroundColor(.black)
@@ -155,18 +162,21 @@ struct ContentView: View {
                 }
             }
             .padding(.top)
+            .frame(height: geometry.size.height * 0.08)
         }
+        .frame(width: geometry.size.width, height: geometry.size.height)
         .background(Color.cyan)
     }
+}
 
     // MARK: - Helpers
 
-    func numButton(_ label: String) -> some View {
+    func numButton(_ label: String, geometry: GeometryProxy) -> some View {
         Button(label) {
             userInput += label
         }
         .font(.title2)
-        .frame(width: 80, height: 50)
+        .frame(width: geometry.size.width * 0.2, height: geometry.size.height * 0.06)
         .background(Color.gray.opacity(0.8))
         .foregroundColor(.white)
         .clipShape(RoundedRectangle(cornerRadius: 10))
