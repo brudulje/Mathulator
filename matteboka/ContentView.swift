@@ -18,17 +18,16 @@ struct ContentView: View {
 
 var body: some View {
     GeometryReader { geometry in
-        VStack(spacing: 6) {
+        VStack(spacing: 16) {
             // Top Row: Logo and Menu
             HStack {
                 Spacer()
                 Text("Matteboka")
-//
                     .font(.title3)
-                    .padding()
-                    .background(Color.blue)
+                    .padding(3)
+                    .background(Color.black.opacity(0.2))
                     .foregroundColor(.white)
-                    .clipShape(Capsule())
+                    .clipShape(RoundedRectangle(cornerRadius: 5))
                 Spacer()
 //                Button("=") {
 //                    // Placeholder for settings or menu
@@ -38,11 +37,11 @@ var body: some View {
 //                .background(Color.green)
 //                .clipShape(RoundedRectangle(cornerRadius: 15))
             }
-//            .frame(maxHeight: geometry.size.height * 0.07)
+            .frame(height: geometry.size.height * 0.04)
 
             // History + Score
             HStack {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 2) {
                     ForEach(Array(history.suffix(5).enumerated()), id: \.offset) { index, entry in
                         let problem = entry.problem
                         let success = entry.correct
@@ -61,22 +60,23 @@ var body: some View {
                 Spacer()
                 VStack {
                     Text("\(scorePercentage())%")
-                        .font(.title)
-                        .padding()
-                        .background(Color.cyan)
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                        .font(.title2)
+                        .padding(.vertical, 4)
+                        .background(Color.blue)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .frame(height: geometry.size.height * 0.08)
                     Button("Null") {
                         history.removeAll()
                     }
                     .padding(.top, 10)
                 }
             }
-            .frame(height: geometry.size.height * 0.18)
+            .frame(height: geometry.size.height * 0.12)
             .padding()
             .background(Color.gray)
 
             // Problem Display
-            HStack {
+            VStack {
                 Text("\(currentProblem.num1) \(currentProblem.symbol) \(currentProblem.num2) =")
                     .font(.largeTitle)
                     .padding()
@@ -88,17 +88,18 @@ var body: some View {
                     userInput = ""
                 }) {
                     Text(userInput.isEmpty ? "?" : userInput)
-                        .font(userInput.count > 6 ? .caption : (userInput.count > 4 ? .title2 : .largeTitle))
+//                        .font(userInput.count > 6 ? .caption : (userInput.count > 4 ? .title2 : .largeTitle))
+                        .font(.largeTitle)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .background(Color.black)
                         .foregroundColor(.white)
                 }
-                .frame(width: geometry.size.width * 0.25)
+                .frame(maxWidth: .infinity)
                 .clipShape(RoundedRectangle(cornerRadius: 20))
                
             }
             .padding(.horizontal)
-            .frame(height: geometry.size.height * 0.10)
+            .frame(height: geometry.size.height * 0.15)
 
             // Numpad
             VStack(spacing: 3) {
@@ -128,23 +129,23 @@ var body: some View {
             .frame(height: geometry.size.height * 0.32)
 
             // Difficulty Slider
-            VStack {
-                let sliderWidth: CGFloat = 260
-                let minOffset: CGFloat = -130
-                let xOffset = ((difficulty - 1) / 29) * sliderWidth + minOffset
-                ZStack {
-                    Slider(value: $difficulty, in: 6...36, step: 1)
-                        .accentColor(.green)
-                        .padding(.horizontal)
-                    Text("\(Int(difficulty))")
-                        .font(.caption)
-                        .foregroundColor(.black)
-                        .padding(.horizontal, 8)
-                        .background(Color.white)
-                        .cornerRadius(10)
-                        .offset(x: xOffset, y: -20)
-                }
-            }
+            HStack {
+                Slider(value: $difficulty, in: 6...36, step: 1)
+                    .accentColor(.green)
+                    .frame(height: geometry.size.height * 0.04) // shorter height
+                Text("\(Int(difficulty))")
+                    .font(.caption)
+                    .frame(minWidth: geometry.size.width * 0.05)
+                    .padding(6)
+                    .background(Color(hue: (difficulty - 6) / 30, saturation: 0.8, brightness: 1.0))
+                    .animation(.easeInOut(duration: 0.3), value: difficulty)
+//                    .background(Color.white) // booring!
+                    .cornerRadius(10)
+                    .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.white, lineWidth: 2)
+                        )            }
+            .padding(.horizontal)
             .frame(height: geometry.size.height * 0.04)
 
             // Operator Selection
@@ -154,10 +155,10 @@ var body: some View {
                         selectedOperator = op
                         newProblem()
                     }
-                    .frame(width: geometry.size.width * 0.21, height: geometry.size.height * 0.08)
+                    .frame(width: geometry.size.width * 0.22, height: geometry.size.height * 0.08)
                     .font(.title)
-                    .background(op == selectedOperator ? Color.purple : Color.pink)
-                    .foregroundColor(.black)
+                    .background(op == selectedOperator ? Color.white.opacity(0.4) : Color.black.opacity(0.4))
+                    .foregroundColor(op == selectedOperator ? Color.black : Color.white)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
             }
@@ -165,7 +166,10 @@ var body: some View {
             .frame(height: geometry.size.height * 0.08)
         }
         .frame(width: geometry.size.width, height: geometry.size.height)
-        .background(Color.cyan)
+        .background(Color.blue)
+//        .ignoresSafeArea(.all)
+//        .ignoresSafeArea(.container, edges: [.top, .bottom])
+//        .ignoresSafeArea(.container, edges: .top)
     }
 }
 
@@ -177,7 +181,7 @@ var body: some View {
         }
         .font(.title2)
         .frame(width: geometry.size.width * 0.2, height: geometry.size.height * 0.06)
-        .background(Color.gray.opacity(0.8))
+        .background(Color.black.opacity(0.8))
         .foregroundColor(.white)
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
@@ -200,4 +204,5 @@ var body: some View {
         let correct = history.filter { $0.correct }.count
         return Int((Double(correct) / Double(history.count)) * 100)
     }
+
 }
