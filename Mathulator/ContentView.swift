@@ -73,16 +73,17 @@ var body: some View {
                     .padding(.top, 10)
                 }
             }
-            .frame(height: geometry.size.height * 0.12)
+            .frame(width: geometry.size.width * 0.85, height: geometry.size.height * 0.12)
             .padding()
             .background(Color.gray)
+            .clipShape(RoundedRectangle(cornerRadius: 10))
 
             // Problem Display
             VStack {
                 Text("\(currentProblem.num1) \(currentProblem.symbol) \(currentProblem.num2) =")
                     .font(.largeTitle)
-                    .padding()
-                    .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.1)
+                    .padding(4)
+                    .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.10)
                     .background(Color.black.opacity(0.8))
                     .foregroundColor(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
@@ -90,21 +91,21 @@ var body: some View {
             
                 HStack(spacing: 10) {  // Added spacing
                     Text(userInput.isEmpty ? "?" : userInput)
-                        .font(.largeTitle)
+                        .font(.title)
                         .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.05)
 //                        .padding()
                         .background(Color.black.opacity(0.8))
                         .foregroundColor(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
                     Button(action: {
                         userInput = String(userInput.dropLast())
                     }) {
                         Text("\u{232B}") // Unicode symbol for backspace (U+232B)
-                            .font(.largeTitle)
-                            .frame(width: geometry.size.width * 0.15)
+                            .font(.title)
+                            .frame(maxWidth: geometry.size.width * 0.15, maxHeight: geometry.size.height * 0.05)
                             .background(Color.black.opacity(0.8))
                             .foregroundColor(.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
                     }
                 }
             }
@@ -124,7 +125,7 @@ var body: some View {
                 HStack(spacing: 10) {
                     numButton("-", geometry: geometry)
                     numButton("0", geometry: geometry)
-                    Button("\u{23CE}") {
+                    Button("\u{23CE}") {  // unicode for carrige return
                         submitAnswer()
                     }
                     .font(.title2)
@@ -137,13 +138,14 @@ var body: some View {
             .padding()
             .background(Color.orange)
             .frame(height: geometry.size.height * 0.30)
-            .clipShape(RoundedRectangle(cornerRadius: 20))  //.cornerRadius(10)
+            .clipShape(RoundedRectangle(cornerRadius: 15))  //
+//            .cornerRadius(10)
 
             // Difficulty Slider
             HStack {
                 Slider(value: $difficulty, in: minDifficulty...maxDifficulty, step: 1)
                     .accentColor(.green)
-                    .frame(height: geometry.size.height * 0.04) // shorter height
+                    .frame(height: geometry.size.height * 0.02) // shorter height
                 Text("\(Int(difficulty))")
                     .font(.caption)
                     .frame(minWidth: geometry.size.width * 0.05)
@@ -157,7 +159,7 @@ var body: some View {
                                 .stroke(Color.white, lineWidth: 2)
                         )            }
             .padding(.horizontal)
-            .frame(height: geometry.size.height * 0.04)
+            .frame(height: geometry.size.height * 0.03)
 
             // Operator Selection
             HStack {
