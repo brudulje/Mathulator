@@ -1,6 +1,5 @@
 //
-//  MathProblem.swift
-//  matteboka
+//  MathGenerator.swift
 //
 //  Created by Joachim Seland Graff on 2025-07-04.
 //

@@ -1,6 +1,6 @@
 //
 //  ContentView.swift
-//  matteboka
+//  Mathulator
 //
 //  Created by Joachim Seland Graff on 2025-07-04.
 //
@@ -8,21 +8,23 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var currentProblem = MathProblem(num1: 3, num2: 4, answer: 7, symbol: "+")
+    @State private var currentProblem = generateProblem(difficulty: 11, op: .add)
     @State private var userInput = ""
     @State private var history: [(problem: MathProblem, correct: Bool)] = [] // true = correct, false = wrong
     @State private var selectedOperator: Operator = .add
     @State private var difficulty: Double = 11
 
     let numberOfTasks = 5
+    let minDifficulty: Double = 6
+    let maxDifficulty: Double = 35
 
 var body: some View {
     GeometryReader { geometry in
-        VStack(spacing: 16) {
+        VStack(spacing: 20) {
             // Top Row: Logo and Menu
             HStack {
                 Spacer()
-                Text("Matteboka")
+                Text("Mathulator")
                     .font(.title3)
                     .padding(3)
                     .background(Color.black.opacity(0.2))
@@ -80,23 +82,31 @@ var body: some View {
                 Text("\(currentProblem.num1) \(currentProblem.symbol) \(currentProblem.num2) =")
                     .font(.largeTitle)
                     .padding()
-                    .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.1 )
-                    .background(Color.black)
+                    .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.1)
+                    .background(Color.black.opacity(0.8))
                     .foregroundColor(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
-                Button(action: {
-                    userInput = ""
-                }) {
+                // Removed spacer, added clipShape
+            
+                HStack(spacing: 10) {  // Added spacing
                     Text(userInput.isEmpty ? "?" : userInput)
-//                        .font(userInput.count > 6 ? .caption : (userInput.count > 4 ? .title2 : .largeTitle))
                         .font(.largeTitle)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color.black)
+                        .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.05)
+//                        .padding()
+                        .background(Color.black.opacity(0.8))
                         .foregroundColor(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                    Button(action: {
+                        userInput = String(userInput.dropLast())
+                    }) {
+                        Text("\u{232B}") // Unicode symbol for backspace (U+232B)
+                            .font(.largeTitle)
+                            .frame(width: geometry.size.width * 0.15)
+                            .background(Color.black.opacity(0.8))
+                            .foregroundColor(.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                    }
                 }
-                .frame(maxWidth: .infinity)
-                .clipShape(RoundedRectangle(cornerRadius: 20))
-               
             }
             .padding(.horizontal)
             .frame(height: geometry.size.height * 0.15)
@@ -114,30 +124,31 @@ var body: some View {
                 HStack(spacing: 10) {
                     numButton("-", geometry: geometry)
                     numButton("0", geometry: geometry)
-                    Button("Svar") {
+                    Button("\u{23CE}") {
                         submitAnswer()
                     }
                     .font(.title2)
-                    .frame(width: geometry.size.width * 0.2, height: geometry.size.height * 0.07)
-                    .background(Color.orange)
-                    .foregroundColor(.white)
+                    .frame(width: geometry.size.width * 0.22, height: geometry.size.height * 0.06)
+                    .background(Color.white .opacity(0.4))
+                    .foregroundColor(.black)
                     .clipShape(RoundedRectangle(cornerRadius: 15))
                 }
             }
             .padding()
-            .background(Color.gray)
-            .frame(height: geometry.size.height * 0.32)
+            .background(Color.orange)
+            .frame(height: geometry.size.height * 0.30)
+            .clipShape(RoundedRectangle(cornerRadius: 20))  //.cornerRadius(10)
 
             // Difficulty Slider
             HStack {
-                Slider(value: $difficulty, in: 6...36, step: 1)
+                Slider(value: $difficulty, in: minDifficulty...maxDifficulty, step: 1)
                     .accentColor(.green)
                     .frame(height: geometry.size.height * 0.04) // shorter height
                 Text("\(Int(difficulty))")
                     .font(.caption)
                     .frame(minWidth: geometry.size.width * 0.05)
                     .padding(6)
-                    .background(Color(hue: (difficulty - 6) / 30, saturation: 0.8, brightness: 1.0))
+                    .background(Color(hue: (difficulty - minDifficulty) / (maxDifficulty - minDifficulty), saturation: 0.8, brightness: 1.0))
                     .animation(.easeInOut(duration: 0.3), value: difficulty)
 //                    .background(Color.white) // booring!
                     .cornerRadius(10)
@@ -167,9 +178,12 @@ var body: some View {
         }
         .frame(width: geometry.size.width, height: geometry.size.height)
         .background(Color.blue)
-//        .ignoresSafeArea(.all)
-//        .ignoresSafeArea(.container, edges: [.top, .bottom])
-//        .ignoresSafeArea(.container, edges: .top)
+        .onAppear {
+            newProblem()
+        }
+        .onChange(of: difficulty) { _ in
+            newProblem()
+        }
     }
 }
 
@@ -180,8 +194,8 @@ var body: some View {
             userInput += label
         }
         .font(.title2)
-        .frame(width: geometry.size.width * 0.2, height: geometry.size.height * 0.06)
-        .background(Color.black.opacity(0.8))
+        .frame(width: geometry.size.width * 0.22, height: geometry.size.height * 0.06)
+        .background(Color.black.opacity(0.4))
         .foregroundColor(.white)
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
@@ -197,6 +211,7 @@ var body: some View {
 
     func newProblem() {
         currentProblem = generateProblem(difficulty: difficulty, op: selectedOperator)
+        userInput = ""
     }
 
     func scorePercentage() -> Int {

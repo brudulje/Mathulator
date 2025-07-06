@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct mattebokaApp: App {
+struct MathulatorApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
