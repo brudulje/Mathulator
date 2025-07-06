@@ -47,7 +47,7 @@ func generateProblem(difficulty: Double, op: Operator) -> MathProblem {
         y = Int.random(in: lower...upper)
         answer = x - y
     case .div:
-        let xUpper = interval(for: 1.8 * difficulty).1
+        let xUpper = interval(for: 1.5 * difficulty).1
         y = Int.random(in: 2...Int(difficulty))
         let quotient = Int.random(in: lower...xUpper / max(y, 1))
         x = quotient * y
