@@ -41,43 +41,107 @@ var body: some View {
             }
             .frame(height: geometry.size.height * 0.04)
 
-            // History + Score
-            HStack {
-                VStack(alignment: .leading, spacing: 2) {
-                    ForEach(Array(history.suffix(5).enumerated()), id: \.offset) { index, entry in
-                        let problem = entry.problem
-                        let success = entry.correct
-                        HStack {
-                            Image(systemName: success ? "checkmark.circle.fill" : "xmark.circle.fill")
-                                .foregroundColor(success ? .green : .red)
-                            Text("\(problem.num1) \(problem.symbol) \(problem.num2) = \(problem.answer)")
-                                .frame(maxWidth: .infinity, minHeight: 14, maxHeight: geometry.size.height * 0.03, alignment: .leading)
-                                .padding(.leading, 5)
-                                .background(Color.black)
-                                .foregroundColor(.white)
-                                .clipShape(Capsule())
-                        }
-                    }
-                }
-                Spacer()
-                VStack {
+//            // History + Score
+//            HStack {
+//                VStack(alignment: .leading, spacing: 2) {
+//                    ForEach(Array(history.suffix(5).enumerated()), id: \.offset) { index, entry in
+//                        let problem = entry.problem
+//                        let success = entry.correct
+//                        HStack {
+//                            Image(systemName: success ? "checkmark.circle.fill" : "xmark.circle.fill")
+//                                .foregroundColor(success ? .green : .red)
+//                            Text("\(problem.num1) \(problem.symbol) \(problem.num2) = \(problem.answer)")
+//                                .frame(maxWidth: .infinity, minHeight: 14, maxHeight: geometry.size.height * 0.03, alignment: .leading)
+//                                .padding(.leading, 5)
+//                                .background(Color.black)
+//                                .foregroundColor(.white)
+//                                .clipShape(Capsule())
+//                        }
+//                    }
+//                }
+//                Spacer()
+//                VStack {
+//                    Text("\(scorePercentage())%")
+//                        .font(.title2)
+//                        .padding(.vertical, 4)
+//                        .background(Color.blue)
+//                        .clipShape(RoundedRectangle(cornerRadius: 10))
+//                        .frame(height: geometry.size.height * 0.08)
+//                    Button("Null") {
+//                        history.removeAll()
+//                    }
+//                    .padding(.top, 10)
+//                }
+//            }
+//            .frame(width: geometry.size.width * 0.85, height: geometry.size.height * 0.12)
+//            .padding()
+//            .background(Color.gray)
+//            .clipShape(RoundedRectangle(cornerRadius: 10))
+
+            //History
+            VStack {
+                HStack{
+                    Text("History")
+                        .font(.title2)
+                        .frame(maxWidth: geometry.size.width * 0.7)
                     Text("\(scorePercentage())%")
                         .font(.title2)
                         .padding(.vertical, 4)
                         .background(Color.blue)
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                         .frame(height: geometry.size.height * 0.08)
-                    Button("Null") {
-                        history.removeAll()
-                    }
-                    .padding(.top, 10)
+                    
                 }
-            }
-            .frame(width: geometry.size.width * 0.85, height: geometry.size.height * 0.12)
-            .padding()
-            .background(Color.gray)
-            .clipShape(RoundedRectangle(cornerRadius: 10))
+                HStack {
+                    if let last = history.last {
+                        Image(systemName: last.correct ? "checkmark.circle.fill" : "xmark.circle.fill")
+                            .foregroundColor(last.correct ? .green : .red)
+                    } else {
+                        Image(systemName: "questionmark.circle.fill")
+                            .foregroundColor(.gray)
+                    }
 
+                    Text(history.last.map {
+                        "\($0.problem.num1) \($0.problem.symbol) \($0.problem.num2) = \($0.problem.answer)"
+                    } ?? "")
+                    .frame(maxWidth: .infinity, minHeight: 30, alignment: .leading)
+                    .padding(.leading, 5)
+                    .background(Color.black)
+                    .foregroundColor(.white)
+                    .clipShape(Capsule())
+                }
+                // Last problem show at the bottom of this section
+                // Single history box (always present)
+//                let lastEntry = history.last
+//
+//                Text(lastEntry != nil
+//                     ? "\(lastEntry!.problem.num1) \(lastEntry!.problem.symbol) \(lastEntry!.problem.num2) = \(lastEntry!.problem.answer)"
+//                     : "")
+//                    .frame(maxWidth: .infinity, minHeight: 30, alignment: .leading)
+//                    .padding(.leading, 5)
+//                    .background(Color.black)
+//                    .foregroundColor(.white)
+//                    .clipShape(Capsule())
+//                ForEach(Array(history.suffix(1).enumerated()), id: \.offset) { index, entry in
+//                    let problem = entry.problem
+//                    let success = entry.correct
+//                    HStack {
+//                        Image(systemName: success ? "checkmark.circle.fill" : "xmark.circle.fill")
+//                            .foregroundColor(success ? .green : .red)
+//                        Text(history.isEmpty ? "" :"\(problem.num1) \(problem.symbol) \(problem.num2) = \(problem.answer)")
+//                            .frame(maxWidth: .infinity, minHeight: 14, maxHeight: geometry.size.height * 0.06, alignment: .leading)
+//                            .padding(.leading, 5)
+//                            .background(Color.black)
+//                            .foregroundColor(.white)
+//                            .clipShape(Capsule())
+//                    }
+//                }
+            }  .frame(width: geometry.size.width * 0.85, height: geometry.size.height * 0.12)
+                        .padding()
+                        .background(Color.gray.opacity(0.5))
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+
+            
             // Problem Display
             VStack {
                 Text("\(currentProblem.num1) \(currentProblem.symbol) \(currentProblem.num2) =")
@@ -137,7 +201,7 @@ var body: some View {
             }
             .padding()
             .background(Color.orange)
-            .frame(height: geometry.size.height * 0.30)
+            .frame(height: geometry.size.height * 0.32)
             .clipShape(RoundedRectangle(cornerRadius: 15))  //
 //            .cornerRadius(10)
 
@@ -168,7 +232,7 @@ var body: some View {
                         selectedOperator = op
                         newProblem()
                     }
-                    .frame(width: geometry.size.width * 0.22, height: geometry.size.height * 0.08)
+                    .frame(width: geometry.size.width * 0.22, height: geometry.size.height * 0.06)
                     .font(.title)
                     .background(op == selectedOperator ? Color.white.opacity(0.4) : Color.black.opacity(0.4))
                     .foregroundColor(op == selectedOperator ? Color.black : Color.white)
@@ -196,7 +260,7 @@ var body: some View {
             userInput += label
         }
         .font(.title2)
-        .frame(width: geometry.size.width * 0.22, height: geometry.size.height * 0.06)
+        .frame(width: geometry.size.width * 0.22, height: geometry.size.height * 0.07)
         .background(Color.black.opacity(0.4))
         .foregroundColor(.white)
         .clipShape(RoundedRectangle(cornerRadius: 10))
