@@ -6,27 +6,8 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXContainerItemProxy section */
-		AA57BFAE2E18413900A468CF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AA57BF982E18413700A468CF /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = AA57BF9F2E18413700A468CF;
-			remoteInfo = matteboka;
-		};
-		AA57BFB82E18413900A468CF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AA57BF982E18413700A468CF /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = AA57BF9F2E18413700A468CF;
-			remoteInfo = matteboka;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		AA57BFA02E18413700A468CF /* Mathulator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mathulator.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		AA57BFAD2E18413900A468CF /* MathulatorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MathulatorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		AA57BFB72E18413900A468CF /* MathulatorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MathulatorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -39,20 +20,6 @@
 
 /* Begin PBXFrameworksBuildPhase section */
 		AA57BF9D2E18413700A468CF /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AA57BFAA2E18413900A468CF /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AA57BFB42E18413900A468CF /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -74,8 +41,6 @@
 			isa = PBXGroup;
 			children = (
 				AA57BFA02E18413700A468CF /* Mathulator.app */,
-				AA57BFAD2E18413900A468CF /* MathulatorTests.xctest */,
-				AA57BFB72E18413900A468CF /* MathulatorUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -105,46 +70,6 @@
 			productReference = AA57BFA02E18413700A468CF /* Mathulator.app */;
 			productType = "com.apple.product-type.application";
 		};
-		AA57BFAC2E18413900A468CF /* MathulatorTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = AA57BFC42E18413900A468CF /* Build configuration list for PBXNativeTarget "MathulatorTests" */;
-			buildPhases = (
-				AA57BFA92E18413900A468CF /* Sources */,
-				AA57BFAA2E18413900A468CF /* Frameworks */,
-				AA57BFAB2E18413900A468CF /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				AA57BFAF2E18413900A468CF /* PBXTargetDependency */,
-			);
-			name = MathulatorTests;
-			packageProductDependencies = (
-			);
-			productName = mattebokaTests;
-			productReference = AA57BFAD2E18413900A468CF /* MathulatorTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		AA57BFB62E18413900A468CF /* MathulatorUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = AA57BFC72E18413900A468CF /* Build configuration list for PBXNativeTarget "MathulatorUITests" */;
-			buildPhases = (
-				AA57BFB32E18413900A468CF /* Sources */,
-				AA57BFB42E18413900A468CF /* Frameworks */,
-				AA57BFB52E18413900A468CF /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				AA57BFB92E18413900A468CF /* PBXTargetDependency */,
-			);
-			name = MathulatorUITests;
-			packageProductDependencies = (
-			);
-			productName = mattebokaUITests;
-			productReference = AA57BFB72E18413900A468CF /* MathulatorUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -157,14 +82,6 @@
 				TargetAttributes = {
 					AA57BF9F2E18413700A468CF = {
 						CreatedOnToolsVersion = 16.4;
-					};
-					AA57BFAC2E18413900A468CF = {
-						CreatedOnToolsVersion = 16.4;
-						TestTargetID = AA57BF9F2E18413700A468CF;
-					};
-					AA57BFB62E18413900A468CF = {
-						CreatedOnToolsVersion = 16.4;
-						TestTargetID = AA57BF9F2E18413700A468CF;
 					};
 				};
 			};
@@ -183,28 +100,12 @@
 			projectRoot = "";
 			targets = (
 				AA57BF9F2E18413700A468CF /* Mathulator */,
-				AA57BFAC2E18413900A468CF /* MathulatorTests */,
-				AA57BFB62E18413900A468CF /* MathulatorUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		AA57BF9E2E18413700A468CF /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AA57BFAB2E18413900A468CF /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AA57BFB52E18413900A468CF /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -221,34 +122,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		AA57BFA92E18413900A468CF /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AA57BFB32E18413900A468CF /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		AA57BFAF2E18413900A468CF /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = AA57BF9F2E18413700A468CF /* Mathulator */;
-			targetProxy = AA57BFAE2E18413900A468CF /* PBXContainerItemProxy */;
-		};
-		AA57BFB92E18413900A468CF /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = AA57BF9F2E18413700A468CF /* Mathulator */;
-			targetProxy = AA57BFB82E18413900A468CF /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		AA57BFBF2E18413900A468CF /* Debug */ = {
@@ -382,6 +256,7 @@
 				DEVELOPMENT_TEAM = 6G2MWM88YA;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Mathulator;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -415,6 +290,7 @@
 				DEVELOPMENT_TEAM = 6G2MWM88YA;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Mathulator;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -438,78 +314,6 @@
 			};
 			name = Release;
 		};
-		AA57BFC52E18413900A468CF /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 6G2MWM88YA;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.omhimuland.mattebokaTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Mathulator.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Mathulator";
-			};
-			name = Debug;
-		};
-		AA57BFC62E18413900A468CF /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 6G2MWM88YA;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.omhimuland.mattebokaTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Mathulator.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Mathulator";
-			};
-			name = Release;
-		};
-		AA57BFC82E18413900A468CF /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 6G2MWM88YA;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.omhimuland.mattebokaUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = matteboka;
-			};
-			name = Debug;
-		};
-		AA57BFC92E18413900A468CF /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 6G2MWM88YA;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.omhimuland.mattebokaUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = matteboka;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -527,24 +331,6 @@
 			buildConfigurations = (
 				AA57BFC22E18413900A468CF /* Debug */,
 				AA57BFC32E18413900A468CF /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		AA57BFC42E18413900A468CF /* Build configuration list for PBXNativeTarget "MathulatorTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				AA57BFC52E18413900A468CF /* Debug */,
-				AA57BFC62E18413900A468CF /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		AA57BFC72E18413900A468CF /* Build configuration list for PBXNativeTarget "MathulatorUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				AA57BFC82E18413900A468CF /* Debug */,
-				AA57BFC92E18413900A468CF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
