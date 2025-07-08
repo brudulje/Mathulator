@@ -13,7 +13,8 @@ struct ContentView: View {
     @State private var history: [(problem: MathProblem, correct: Bool)] = [] // true = correct, false = wrong
     @State private var selectedOperator: Operator = .add
     @State private var difficulty: Double = 11
-
+    @State private var showHighScores = false
+    
     let numberOfTasks = 5
     let minDifficulty: Double = 6
     let maxDifficulty: Double = 35
@@ -33,7 +34,7 @@ var body: some View {
                 HStack {
                     Spacer()
                     Button(action: {
-                        // your action here
+                        showHighScores = true
                     }) {
                         Text("\u{1F3C6}")
                             .font(.headline)
@@ -237,9 +238,25 @@ var body: some View {
             newProblem()
             history.removeAll()
         }
+        .sheet(isPresented: $showHighScores) {
+            HighScoresView()
+        }
     }
 }
 
+    struct HighScoresView: View {
+        var body: some View {
+            VStack(spacing: 20) {
+                Text("High Scores")
+                    .font(.largeTitle)
+                    .bold()
+                Text("Coming soon...")
+                    .foregroundColor(.gray)
+                Spacer()
+            }
+            .padding()
+        }
+    }
     // MARK: - Helpers
 
     func numButton(_ label: String, geometry: GeometryProxy) -> some View {
