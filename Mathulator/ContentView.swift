@@ -14,6 +14,9 @@ struct ContentView: View {
     @State private var selectedOperator: Operator = .add
     @State private var difficulty: Double = 11
     @State private var showHighScores = false
+    @State private var currentStreak = 0
+    
+    @StateObject private var highScores = HighScores()
     
     let numberOfTasks = 5
     let minDifficulty: Double = 6
@@ -215,6 +218,8 @@ var body: some View {
             HStack {
                 ForEach(Operator.allCases, id: \.self) { op in
                     Button(op.rawValue) {
+                        highScores.updateIfHigher(streak: currentStreak, difficulty: Int(difficulty), op: selectedOperator)
+                        currentStreak = 0
                         selectedOperator = op
                         newProblem()
                         history.removeAll()
@@ -235,11 +240,13 @@ var body: some View {
             newProblem()
         }
         .onChange(of: difficulty) { _ in
+            highScores.updateIfHigher(streak: currentStreak, difficulty: Int(difficulty), op: selectedOperator)
+            currentStreak = 0
             newProblem()
             history.removeAll()
         }
         .sheet(isPresented: $showHighScores) {
-            HighScoresView()
+            HighScoresView(highScores: highScores)
         }
     }
 }
@@ -274,7 +281,14 @@ var body: some View {
         guard let guess = Int(userInput) else { return }
         let correct = guess == currentProblem.answer
         history.append((currentProblem, correct))
-//        if history.count > 5 { history.removeFirst() }  // Remove to allow arbitrarily long history
+        
+        if correct {
+                currentStreak += 1
+            } else {
+                highScores.updateIfHigher(streak: currentStreak, difficulty: Int(difficulty), op: selectedOperator)
+                currentStreak = 0
+            }
+
         userInput = ""
         newProblem()
     }
