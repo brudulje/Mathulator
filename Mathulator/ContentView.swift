@@ -252,18 +252,52 @@ var body: some View {
 }
 
     struct HighScoresView: View {
+        @ObservedObject var highScores: HighScores
+
         var body: some View {
-            VStack(spacing: 20) {
-                Text("High Scores")
-                    .font(.largeTitle)
-                    .bold()
-                Text("Coming soon...")
-                    .foregroundColor(.gray)
-                Spacer()
+            NavigationView {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 12) {
+                        ForEach(HighScores.difficulties, id: \.self) { difficulty in
+                            HStack {
+                                Text("Lv \(difficulty)")
+                                    .frame(width: 50, alignment: .leading)
+                                    .font(.caption)
+                                
+                                ForEach(Operator.allCases, id: \.self) { op in
+                                    Text("\(highScores.highScore(for: difficulty, op: op))")
+                                        .frame(maxWidth: .infinity)
+                                        .font(.caption)
+                                        .padding(4)
+                                        .background(Color.gray.opacity(0.1))
+                                        .clipShape(RoundedRectangle(cornerRadius: 5))
+                                }
+                            }
+                        }
+                    }
+                    .padding()
+                }
+                .navigationTitle("High Scores")
+                .navigationBarTitleDisplayMode(.inline)
             }
-            .padding()
         }
     }
+    
+// Dummy which does compile and run, but shows nothing
+//    struct HighScoresView: View {
+//        var body: some View {
+//            VStack(spacing: 20) {
+//                Text("High Scores")
+//                    .font(.largeTitle)
+//                    .bold()
+//                Text("Coming soon...")
+//                    .foregroundColor(.gray)
+//                Spacer()
+//            }
+//            .padding()
+//        }
+//    }
+    
     // MARK: - Helpers
 
     func numButton(_ label: String, geometry: GeometryProxy) -> some View {
