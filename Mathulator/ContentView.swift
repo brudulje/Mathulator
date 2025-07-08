@@ -20,76 +20,86 @@ struct ContentView: View {
 
 var body: some View {
     GeometryReader { geometry in
-        VStack(spacing: 20) {
+        VStack(spacing: 9) {
             // Top Row: Logo and Menu
-            HStack {
-                Spacer()
+            ZStack {
                 Text("Mathulator")
-                    .font(.title3)
+                    .font(.headline)
                     .padding(3)
                     .background(Color.black.opacity(0.2))
                     .foregroundColor(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 5))
-                Spacer()
-//                Button("=") {
-//                    // Placeholder for settings or menu
-//                }
-//                .font(.title)
-//                .padding()
-//                .background(Color.green)
-//                .clipShape(RoundedRectangle(cornerRadius: 15))
-            }
-            .frame(height: geometry.size.height * 0.04)
 
-//            // History + Score
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        // your action here
+                    }) {
+                        Text("\u{1F3C6}")
+                            .font(.headline)
+                            .frame(maxWidth: geometry.size.width * 0.12, maxHeight: geometry.size.height * 0.06)
+                            .background(Color.black.opacity(0.2))
+                            .clipShape(RoundedRectangle(cornerRadius: 5))
+                            .padding(.trailing, 12)
+                    }
+                }
+            }
+            .frame(height: geometry.size.height * 0.06)
+            
 //            HStack {
-//                VStack(alignment: .leading, spacing: 2) {
-//                    ForEach(Array(history.suffix(5).enumerated()), id: \.offset) { index, entry in
-//                        let problem = entry.problem
-//                        let success = entry.correct
-//                        HStack {
-//                            Image(systemName: success ? "checkmark.circle.fill" : "xmark.circle.fill")
-//                                .foregroundColor(success ? .green : .red)
-//                            Text("\(problem.num1) \(problem.symbol) \(problem.num2) = \(problem.answer)")
-//                                .frame(maxWidth: .infinity, minHeight: 14, maxHeight: geometry.size.height * 0.03, alignment: .leading)
-//                                .padding(.leading, 5)
-//                                .background(Color.black)
-//                                .foregroundColor(.white)
-//                                .clipShape(Capsule())
-//                        }
-//                    }
-//                }
 //                Spacer()
-//                VStack {
-//                    Text("\(scorePercentage())%")
-//                        .font(.title2)
-//                        .padding(.vertical, 4)
-//                        .background(Color.blue)
-//                        .clipShape(RoundedRectangle(cornerRadius: 10))
-//                        .frame(height: geometry.size.height * 0.08)
-//                    Button("Null") {
-//                        history.removeAll()
-//                    }
-//                    .padding(.top, 10)
+//                Text("Mathulator")
+//                    .font(.headline)
+//                    .padding(3)
+//                    .background(Color.black.opacity(0.2))
+//                    .foregroundColor(.white)
+//                    .clipShape(RoundedRectangle(cornerRadius: 5))
+//                Spacer()
+//                Button(action: {
+//                    userInput = String(userInput.dropLast())
+//                }) {
+//                    Text("...")                    // Placeholder for high scores
+//                        .font(.headline)
+////                        .padding()
+//                        .frame(maxWidth: geometry.size.width * 0.10)//, maxHeight: geometry.size.height * 0.03)
+//                        .background(Color.black.opacity(0.2))
+//                        .clipShape(RoundedRectangle(cornerRadius: 5))
 //                }
 //            }
-//            .frame(width: geometry.size.width * 0.85, height: geometry.size.height * 0.12)
-//            .padding()
-//            .background(Color.gray)
-//            .clipShape(RoundedRectangle(cornerRadius: 10))
+//            .frame(height: geometry.size.height * 0.03)
 
             //History
             VStack {
                 HStack{
-                    Text("History")
-                        .font(.title2)
-                        .frame(maxWidth: geometry.size.width * 0.7)
+                    let symbols = history.map { $0.correct ? "checkmark.circle.fill" : "xmark.circle.fill" }
+                    let maxSymbols = 20
+                    let filledSymbols = Array(symbols.suffix(maxSymbols))
+                    let paddedSymbols = filledSymbols + Array(repeating: "questionmark.circle.fill", count: maxSymbols - filledSymbols.count)
+
+                    VStack(spacing: 4) {
+                        ForEach(0..<2, id: \.self) { row in
+                            HStack(spacing: 4) {
+                                ForEach(0..<10, id: \.self) { col in
+                                    let index = row * 10 + col
+                                    Image(systemName: paddedSymbols[index])
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 16, height: 16)
+                                        .foregroundColor(
+                                            paddedSymbols[index] == "checkmark.circle.fill" ? .green :
+                                            paddedSymbols[index] == "xmark.circle.fill" ? .red : .gray
+                                        )
+                                }.animation(.easeInOut, value: history.count)
+                            }
+                        }
+                    }
                     Text("\(scorePercentage())%")
+                        .frame(width: geometry.size.height * 0.15, height: geometry.size.height * 0.08)  // WIP
                         .font(.title2)
                         .padding(.vertical, 4)
-                        .background(Color.blue)
+                        .background(Color.green)
                         .clipShape(RoundedRectangle(cornerRadius: 10))
-                        .frame(height: geometry.size.height * 0.08)
+                        .frame(width: geometry.size.height * 0.15, height: geometry.size.height * 0.10)  // WIP
                     
                 }
                 HStack {
@@ -104,41 +114,16 @@ var body: some View {
                     Text(history.last.map {
                         "\($0.problem.num1) \($0.problem.symbol) \($0.problem.num2) = \($0.problem.answer)"
                     } ?? "")
-                    .frame(maxWidth: .infinity, minHeight: 30, alignment: .leading)
-                    .padding(.leading, 5)
-                    .background(Color.black)
+                    .frame(maxWidth: .infinity, minHeight: 25, alignment: .leading)
+                    .padding(.leading, 15)
+                    .background(Color.black.opacity(0.8))
                     .foregroundColor(.white)
                     .clipShape(Capsule())
                 }
                 // Last problem show at the bottom of this section
-                // Single history box (always present)
-//                let lastEntry = history.last
-//
-//                Text(lastEntry != nil
-//                     ? "\(lastEntry!.problem.num1) \(lastEntry!.problem.symbol) \(lastEntry!.problem.num2) = \(lastEntry!.problem.answer)"
-//                     : "")
-//                    .frame(maxWidth: .infinity, minHeight: 30, alignment: .leading)
-//                    .padding(.leading, 5)
-//                    .background(Color.black)
-//                    .foregroundColor(.white)
-//                    .clipShape(Capsule())
-//                ForEach(Array(history.suffix(1).enumerated()), id: \.offset) { index, entry in
-//                    let problem = entry.problem
-//                    let success = entry.correct
-//                    HStack {
-//                        Image(systemName: success ? "checkmark.circle.fill" : "xmark.circle.fill")
-//                            .foregroundColor(success ? .green : .red)
-//                        Text(history.isEmpty ? "" :"\(problem.num1) \(problem.symbol) \(problem.num2) = \(problem.answer)")
-//                            .frame(maxWidth: .infinity, minHeight: 14, maxHeight: geometry.size.height * 0.06, alignment: .leading)
-//                            .padding(.leading, 5)
-//                            .background(Color.black)
-//                            .foregroundColor(.white)
-//                            .clipShape(Capsule())
-//                    }
-//                }
             }  .frame(width: geometry.size.width * 0.85, height: geometry.size.height * 0.12)
                         .padding()
-                        .background(Color.gray.opacity(0.5))
+                        .background(Color.white.opacity(0.4))
                         .clipShape(RoundedRectangle(cornerRadius: 10))
 
             
@@ -193,15 +178,15 @@ var body: some View {
                         submitAnswer()
                     }
                     .font(.title2)
-                    .frame(width: geometry.size.width * 0.22, height: geometry.size.height * 0.06)
+                    .frame(width: geometry.size.width * 0.25, height: geometry.size.height * 0.075)
                     .background(Color.white .opacity(0.4))
                     .foregroundColor(.black)
-                    .clipShape(RoundedRectangle(cornerRadius: 15))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
             }
             .padding()
             .background(Color.orange)
-            .frame(height: geometry.size.height * 0.32)
+            .frame(height: geometry.size.height * 0.36)
             .clipShape(RoundedRectangle(cornerRadius: 15))  //
 //            .cornerRadius(10)
 
@@ -209,7 +194,7 @@ var body: some View {
             HStack {
                 Slider(value: $difficulty, in: minDifficulty...maxDifficulty, step: 1)
                     .accentColor(.green)
-                    .frame(height: geometry.size.height * 0.02) // shorter height
+                    .frame(height: geometry.size.height * 0.04) // shorter height
                 Text("\(Int(difficulty))")
                     .font(.caption)
                     .frame(minWidth: geometry.size.width * 0.05)
@@ -231,16 +216,17 @@ var body: some View {
                     Button(op.rawValue) {
                         selectedOperator = op
                         newProblem()
+                        history.removeAll()
                     }
-                    .frame(width: geometry.size.width * 0.22, height: geometry.size.height * 0.06)
+                    .frame(width: geometry.size.width * 0.22, height: geometry.size.height * 0.08)
                     .font(.title)
                     .background(op == selectedOperator ? Color.white.opacity(0.4) : Color.black.opacity(0.4))
                     .foregroundColor(op == selectedOperator ? Color.black : Color.white)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
             }
-            .padding(.top)
-            .frame(height: geometry.size.height * 0.08)
+//            .padding(.top)
+            .frame(height: geometry.size.height * 0.12)
         }
         .frame(width: geometry.size.width, height: geometry.size.height)
         .background(Color.blue)
@@ -249,6 +235,7 @@ var body: some View {
         }
         .onChange(of: difficulty) { _ in
             newProblem()
+            history.removeAll()
         }
     }
 }
@@ -260,7 +247,7 @@ var body: some View {
             userInput += label
         }
         .font(.title2)
-        .frame(width: geometry.size.width * 0.22, height: geometry.size.height * 0.07)
+        .frame(width: geometry.size.width * 0.25, height: geometry.size.height * 0.08)
         .background(Color.black.opacity(0.4))
         .foregroundColor(.white)
         .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -270,7 +257,7 @@ var body: some View {
         guard let guess = Int(userInput) else { return }
         let correct = guess == currentProblem.answer
         history.append((currentProblem, correct))
-        if history.count > 5 { history.removeFirst() }
+//        if history.count > 5 { history.removeFirst() }  // Remove to allow arbitrarily long history
         userInput = ""
         newProblem()
     }
