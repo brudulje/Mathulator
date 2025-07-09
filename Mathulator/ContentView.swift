@@ -360,7 +360,7 @@ var body: some View {
         static func highScoreTextColor(for score: Int) -> Color {
             switch score {
             case 0:
-                return Color.gray.opacity(0.3)
+                return Color.gray.opacity(0.5)
             case 1...:
                 return Color.black
             default:

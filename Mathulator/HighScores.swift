@@ -9,18 +9,28 @@
 import Foundation
 
 class HighScores: ObservableObject {
-//    static let difficulties = Array(6...35)
+    //    static let difficulties = Array(6...35)
     static let minDifficulty = ContentView.minDifficulty
     static let maxDifficulty = ContentView.maxDifficulty
     static let difficulties = Array(Int(minDifficulty)...Int(maxDifficulty))
     static let operatorCount = Operator.allCases.count
     
-    @Published var matrix: [[Int]]
+    private static let storageKey = "highScoreMatrix"
     
-    init() {
-        self.matrix = Array(repeating: Array(repeating: 0, count: HighScores.operatorCount), count: HighScores.difficulties.count)
+    @Published var matrix: [[Int]] {
+        didSet {
+            save()
+        }
     }
     
+    init() {
+        if let data = UserDefaults.standard.data(forKey: Self.storageKey),
+           let decoded = try? JSONDecoder().decode([[Int]].self, from: data) {
+            self.matrix = decoded
+        } else {
+            self.matrix = Array(repeating: Array(repeating: 0, count: Self.operatorCount), count: Self.difficulties.count)
+        }
+    }
     func updateIfHigher(streak: Int, difficulty: Int, op: Operator) {
         guard let row = HighScores.difficulties.firstIndex(of: difficulty),
               let col = Operator.allCases.firstIndex(of: op)
@@ -37,5 +47,10 @@ class HighScores: ObservableObject {
         else { return 0 }
         
         return matrix[row][col]
+    }
+    private func save() {
+        if let encoded = try? JSONEncoder().encode(matrix) {
+            UserDefaults.standard.set(encoded, forKey: Self.storageKey)
+        }
     }
 }
