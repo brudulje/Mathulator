@@ -19,8 +19,8 @@ struct ContentView: View {
     @StateObject private var highScores = HighScores()
     
 //    let numberOfTasks = 5
-    static let minDifficulty: Double = 6
-    static let maxDifficulty: Double = 35
+    static let minDifficulty = DifficultyConfig.minDifficulty
+    static let maxDifficulty = DifficultyConfig.maxDifficulty
 
 var body: some View {
     GeometryReader { geometry in
@@ -397,7 +397,7 @@ var body: some View {
     }
     
     static func difficultyHue(for difficulty: Double) -> Double {
-        return (difficulty - minDifficulty) / (maxDifficulty - minDifficulty)
+        return Double((difficulty - minDifficulty) / (maxDifficulty - minDifficulty))
     }
 
     static func difficultyColor(for difficulty: Double) -> Color {

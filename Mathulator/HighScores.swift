@@ -9,7 +9,10 @@
 import Foundation
 
 class HighScores: ObservableObject {
-    static let difficulties = Array(6...35)
+//    static let difficulties = Array(6...35)
+    static let minDifficulty = ContentView.minDifficulty
+    static let maxDifficulty = ContentView.maxDifficulty
+    static let difficulties = Array(Int(minDifficulty)...Int(maxDifficulty))
     static let operatorCount = Operator.allCases.count
     
     @Published var matrix: [[Int]]
