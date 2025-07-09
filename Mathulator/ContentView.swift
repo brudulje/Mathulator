@@ -174,18 +174,23 @@ var body: some View {
                         }
                     }
                 }
-
+                
                 HStack(spacing: 10) {
                     numButton("-", geometry: geometry)
                     numButton("0", geometry: geometry)
-                    Button("\u{23CE}") {  // unicode for carrige return
+                    
+                    Button(action: {
                         submitAnswer()
+                    }) {
+                        Text("\u{23CE}")
+                            .font(.title2)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .foregroundColor(.black)
+                            .background(Color.white.opacity(0.4))
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
-                    .font(.title2)
                     .frame(width: geometry.size.width * 0.25, height: geometry.size.height * 0.075)
-                    .background(Color.white .opacity(0.4))
-                    .foregroundColor(.black)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .contentShape(Rectangle()) // Makes entire button tappable
                 }
             }
             .padding()
@@ -193,7 +198,7 @@ var body: some View {
             .frame(height: geometry.size.height * 0.36)
             .clipShape(RoundedRectangle(cornerRadius: 15))  //
 //            .cornerRadius(10)
-
+            
             // Difficulty Slider
             HStack {
                 Slider(value: $difficulty, in: minDifficulty...maxDifficulty, step: 1)
@@ -301,16 +306,20 @@ var body: some View {
     // MARK: - Helpers
 
     func numButton(_ label: String, geometry: GeometryProxy) -> some View {
-        Button(label) {
+        Button(action: {
             userInput += label
+        }) {
+            Text(label)
+                .font(.title2)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .foregroundColor(.white)
+                .background(Color.black.opacity(0.4))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
         }
-        .font(.title2)
         .frame(width: geometry.size.width * 0.25, height: geometry.size.height * 0.08)
-        .background(Color.black.opacity(0.4))
-        .foregroundColor(.white)
-        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .contentShape(Rectangle()) // ensures the full frame is tappable
     }
-
+    
     func submitAnswer() {
         guard let guess = Int(userInput) else { return }
         let correct = guess == currentProblem.answer
