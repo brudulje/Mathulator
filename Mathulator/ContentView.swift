@@ -18,7 +18,6 @@ struct ContentView: View {
     
     @StateObject private var highScores = HighScores()
     
-//    let numberOfTasks = 5
     static let minDifficulty = DifficultyConfig.minDifficulty
     static let maxDifficulty = DifficultyConfig.maxDifficulty
 
@@ -50,27 +49,6 @@ var body: some View {
             }
             .frame(height: geometry.size.height * 0.06)
             
-//            HStack {
-//                Spacer()
-//                Text("Mathulator")
-//                    .font(.headline)
-//                    .padding(3)
-//                    .background(Color.black.opacity(0.2))
-//                    .foregroundColor(.white)
-//                    .clipShape(RoundedRectangle(cornerRadius: 5))
-//                Spacer()
-//                Button(action: {
-//                    userInput = String(userInput.dropLast())
-//                }) {
-//                    Text("...")                    // Placeholder for high scores
-//                        .font(.headline)
-////                        .padding()
-//                        .frame(maxWidth: geometry.size.width * 0.10)//, maxHeight: geometry.size.height * 0.03)
-//                        .background(Color.black.opacity(0.2))
-//                        .clipShape(RoundedRectangle(cornerRadius: 5))
-//                }
-//            }
-//            .frame(height: geometry.size.height * 0.03)
 
             //History
             VStack {
@@ -140,7 +118,6 @@ var body: some View {
                     .background(Color.black.opacity(0.8))
                     .foregroundColor(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
-                // Removed spacer, added clipShape
             
                 HStack(spacing: 10) {  // Added spacing
                     Text(userInput.isEmpty ? "?" : userInput)
@@ -197,7 +174,6 @@ var body: some View {
             .background(Color.orange)
             .frame(height: geometry.size.height * 0.36)
             .clipShape(RoundedRectangle(cornerRadius: 15))  //
-//            .cornerRadius(10)
             
             // Difficulty Slider
             HStack {
@@ -208,7 +184,6 @@ var body: some View {
                     .font(.caption)
                     .frame(minWidth: geometry.size.width * 0.05)
                     .padding(6)
-//                    .background(Color(hue: (difficulty - minDifficulty) / (maxDifficulty - minDifficulty), saturation: 0.8, brightness: 1.0))
                     .background(ContentView.difficultyColor(for : difficulty))
                     .animation(.easeInOut(duration: 0.3), value: difficulty)
 //                    .background(Color.white) // booring!
@@ -237,7 +212,6 @@ var body: some View {
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
             }
-//            .padding(.top)
             .frame(height: geometry.size.height * 0.12)
         }
         .frame(width: geometry.size.width, height: geometry.size.height)
@@ -262,7 +236,7 @@ var body: some View {
         @ObservedObject var highScores: HighScores
 
         var body: some View {
-            GeometryReader { geometry in  // <–– Add this
+            GeometryReader { geometry in
                 NavigationView {
                     VStack {
                         
@@ -320,8 +294,6 @@ var body: some View {
             }
         }
     }
-    
-    
     
     
     // MARK: - Helpers
