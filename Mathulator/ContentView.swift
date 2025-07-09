@@ -256,41 +256,84 @@ var body: some View {
         }
     }
 }
-
+    
+    
     struct HighScoresView: View {
         @ObservedObject var highScores: HighScores
 
         var body: some View {
-            NavigationView {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 12) {
-                        ForEach(HighScores.difficulties, id: \.self) { difficulty in
-                            HStack {
-                                Text("\(difficulty)")
-                                    .frame(width: 50, alignment: .leading)
-                                    .font(.caption)
-                                    .background(ContentView.difficultyColor(for : Double(difficulty)))
-                                
-                                ForEach(Operator.allCases, id: \.self) { op in
-                                    let score = highScores.highScore(for: difficulty, op: op)
-                                    Text("\(score)")
-                                        .frame(maxWidth: .infinity)
+            GeometryReader { geometry in  // <–– Add this
+                NavigationView {
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 12) {
+                            ForEach(HighScores.difficulties, id: \.self) { difficulty in
+                                HStack(spacing: 4) {
+                                    Text("\(difficulty)")
+                                        .frame(width: geometry.size.width * 0.15, alignment: .center)
                                         .font(.caption)
                                         .padding(4)
-                                        .foregroundColor(highScoreTextColor(for: score))
-                                        .background(highScoreBackgroundColor(for: score))
+                                        .foregroundColor(difficultyTextColor(for: Double(difficulty)))
+                                        .background(ContentView.difficultyColor(for: Double(difficulty)))
                                         .clipShape(RoundedRectangle(cornerRadius: 5))
+
+                                    ForEach(Operator.allCases, id: \.self) { op in
+                                        let score = highScores.highScore(for: difficulty, op: op)
+                                        Text("\(score)")
+                                            .frame(width: geometry.size.width * 0.15)  // 4 operators × 0.18 = ~0.72 + 0.15 = ~0.87
+                                            .font(.caption)
+                                            .padding(4)
+                                            .foregroundColor(highScoreTextColor(for: score))
+                                            .background(highScoreBackgroundColor(for: score))
+                                            .clipShape(RoundedRectangle(cornerRadius: 5))
+                                    }
                                 }
                             }
                         }
+                        .padding()
                     }
-                    .padding()
+                    .navigationTitle("        \u{1F3C6}        \u{1F3C6}        \u{1F3C6}        \u{1F3C6}")
+                    .navigationBarTitleDisplayMode(.inline)
                 }
-                .navigationTitle("        \u{1F3C6}        \u{1F3C6}        \u{1F3C6}        \u{1F3C6}")  // Unicode Trophy
-                .navigationBarTitleDisplayMode(.inline)
             }
         }
     }
+    
+    
+//
+//    struct HighScoresView: View {
+//        @ObservedObject var highScores: HighScores
+//
+//        var body: some View {
+//            NavigationView {
+//                ScrollView {
+//                    VStack(alignment: .leading, spacing: 12) {
+//                        ForEach(HighScores.difficulties, id: \.self) { difficulty in
+//                            HStack {
+//                                Text("\(difficulty)")
+//                                    .frame(width: 50, alignment: .leading)
+//                                    .font(.caption)
+//                                    .background(ContentView.difficultyColor(for : Double(difficulty)))
+//                                
+//                                ForEach(Operator.allCases, id: \.self) { op in
+//                                    let score = highScores.highScore(for: difficulty, op: op)
+//                                    Text("\(score)")
+//                                        .frame(maxWidth: .infinity)
+//                                        .font(.caption)
+//                                        .padding(4)
+//                                        .foregroundColor(highScoreTextColor(for: score))
+//                                        .background(highScoreBackgroundColor(for: score))
+//                                        .clipShape(RoundedRectangle(cornerRadius: 5))
+//                                }
+//                            }
+//                        }
+//                    }
+//                    .padding()
+//                }
+//                .navigationTitle("        \u{1F3C6}        \u{1F3C6}        \u{1F3C6}        \u{1F3C6}")  // Unicode Trophy
+//                .navigationBarTitleDisplayMode(.inline)
+//            }
+//        }
+//    }
     
     
     // MARK: - Helpers
@@ -365,9 +408,24 @@ var body: some View {
             }
     }
     
+    static func difficultyHue(for difficulty: Double) -> Double {
+        return (difficulty - minDifficulty) / (maxDifficulty - minDifficulty)
+    }
+
     static func difficultyColor(for difficulty: Double) -> Color {
-        return Color(hue: (difficulty - minDifficulty) / (maxDifficulty - minDifficulty),
-                     saturation: 0.8,
-                     brightness: 1.0)
+        let hue = difficultyHue(for: difficulty)
+        return Color(hue: hue, saturation: 0.8, brightness: 1.0)
+    }
+
+    static func difficultyTextColor(for difficulty: Double) -> Color {
+        let hue = difficultyHue(for: difficulty)
+        switch hue {
+        case 0.0..<0.1:
+            return .white
+        case 0.1..<0.6:
+            return .black
+        default:
+            return .white
+        }
     }
 }
