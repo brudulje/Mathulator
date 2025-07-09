@@ -18,9 +18,9 @@ struct ContentView: View {
     
     @StateObject private var highScores = HighScores()
     
-    let numberOfTasks = 5
-    let minDifficulty: Double = 6
-    let maxDifficulty: Double = 35
+//    let numberOfTasks = 5
+    static let minDifficulty: Double = 6
+    static let maxDifficulty: Double = 35
 
 var body: some View {
     GeometryReader { geometry in
@@ -39,7 +39,7 @@ var body: some View {
                     Button(action: {
                         showHighScores = true
                     }) {
-                        Text("\u{1F3C6}")
+                        Text("\u{1F3C6}")  // Unicode Trophy
                             .font(.headline)
                             .frame(maxWidth: geometry.size.width * 0.12, maxHeight: geometry.size.height * 0.06)
                             .background(Color.black.opacity(0.2))
@@ -201,14 +201,15 @@ var body: some View {
             
             // Difficulty Slider
             HStack {
-                Slider(value: $difficulty, in: minDifficulty...maxDifficulty, step: 1)
+                Slider(value: $difficulty, in: ContentView.minDifficulty...ContentView.maxDifficulty, step: 1)
                     .accentColor(.green)
                     .frame(height: geometry.size.height * 0.04) // shorter height
                 Text("\(Int(difficulty))")
                     .font(.caption)
                     .frame(minWidth: geometry.size.width * 0.05)
                     .padding(6)
-                    .background(Color(hue: (difficulty - minDifficulty) / (maxDifficulty - minDifficulty), saturation: 0.8, brightness: 1.0))
+//                    .background(Color(hue: (difficulty - minDifficulty) / (maxDifficulty - minDifficulty), saturation: 0.8, brightness: 1.0))
+                    .background(ContentView.difficultyColor(for : difficulty))
                     .animation(.easeInOut(duration: 0.3), value: difficulty)
 //                    .background(Color.white) // booring!
                     .cornerRadius(10)
@@ -265,16 +266,19 @@ var body: some View {
                     VStack(alignment: .leading, spacing: 12) {
                         ForEach(HighScores.difficulties, id: \.self) { difficulty in
                             HStack {
-                                Text("Lv \(difficulty)")
+                                Text("\(difficulty)")
                                     .frame(width: 50, alignment: .leading)
                                     .font(.caption)
+                                    .background(ContentView.difficultyColor(for : Double(difficulty)))
                                 
                                 ForEach(Operator.allCases, id: \.self) { op in
-                                    Text("\(highScores.highScore(for: difficulty, op: op))")
+                                    let score = highScores.highScore(for: difficulty, op: op)
+                                    Text("\(score)")
                                         .frame(maxWidth: .infinity)
                                         .font(.caption)
                                         .padding(4)
-                                        .background(Color.gray.opacity(0.1))
+                                        .foregroundColor(highScoreTextColor(for: score))
+                                        .background(highScoreBackgroundColor(for: score))
                                         .clipShape(RoundedRectangle(cornerRadius: 5))
                                 }
                             }
@@ -282,26 +286,12 @@ var body: some View {
                     }
                     .padding()
                 }
-                .navigationTitle("High Scores")
+                .navigationTitle("        \u{1F3C6}        \u{1F3C6}        \u{1F3C6}        \u{1F3C6}")  // Unicode Trophy
                 .navigationBarTitleDisplayMode(.inline)
             }
         }
     }
     
-// Dummy which does compile and run, but shows nothing
-//    struct HighScoresView: View {
-//        var body: some View {
-//            VStack(spacing: 20) {
-//                Text("High Scores")
-//                    .font(.largeTitle)
-//                    .bold()
-//                Text("Coming soon...")
-//                    .foregroundColor(.gray)
-//                Spacer()
-//            }
-//            .padding()
-//        }
-//    }
     
     // MARK: - Helpers
 
@@ -328,9 +318,9 @@ var body: some View {
         if correct {
                 currentStreak += 1
             } else {
-                highScores.updateIfHigher(streak: currentStreak, difficulty: Int(difficulty), op: selectedOperator)
                 currentStreak = 0
             }
+        highScores.updateIfHigher(streak: currentStreak, difficulty: Int(difficulty), op: selectedOperator)
 
         userInput = ""
         newProblem()
@@ -346,5 +336,38 @@ var body: some View {
         let correct = history.filter { $0.correct }.count
         return Int((Double(correct) / Double(history.count)) * 100)
     }
-
+    
+    static func highScoreBackgroundColor(for score: Int) -> Color {
+        switch score {
+        case 0...2:
+            return Color.gray.opacity(0.1)
+        case 3...6:
+            return Color.black.opacity(0.3)
+        case 7...11:
+            return Color.red.opacity(0.4)
+        case 12...19:
+            return Color.yellow.opacity(0.4)
+        case 20...:
+            return Color.green.opacity(0.4)
+        default:
+            return Color.gray.opacity(0.1)
+        }
+    }
+        
+        static func highScoreTextColor(for score: Int) -> Color {
+            switch score {
+            case 0:
+                return Color.gray.opacity(0.3)
+            case 1...:
+                return Color.black
+            default:
+                return Color.black
+            }
+    }
+    
+    static func difficultyColor(for difficulty: Double) -> Color {
+        return Color(hue: (difficulty - minDifficulty) / (maxDifficulty - minDifficulty),
+                     saturation: 0.8,
+                     brightness: 1.0)
+    }
 }
