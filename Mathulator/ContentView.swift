@@ -264,34 +264,57 @@ var body: some View {
         var body: some View {
             GeometryReader { geometry in  // <–– Add this
                 NavigationView {
-                    ScrollView {
-                        VStack(alignment: .leading, spacing: 12) {
-                            ForEach(HighScores.difficulties, id: \.self) { difficulty in
-                                HStack(spacing: 4) {
-                                    Text("\(difficulty)")
-                                        .frame(width: geometry.size.width * 0.15, alignment: .center)
-                                        .font(.caption)
-                                        .padding(4)
-                                        .foregroundColor(difficultyTextColor(for: Double(difficulty)))
-                                        .background(ContentView.difficultyColor(for: Double(difficulty)))
-                                        .clipShape(RoundedRectangle(cornerRadius: 5))
-
-                                    ForEach(Operator.allCases, id: \.self) { op in
-                                        let score = highScores.highScore(for: difficulty, op: op)
-                                        Text("\(score)")
-                                            .frame(width: geometry.size.width * 0.15)  // 4 operators × 0.18 = ~0.72 + 0.15 = ~0.87
+                    VStack {
+                        
+                        HStack {
+                            Text("")
+                                .frame(width: geometry.size.width * 0.15, alignment: .center)
+                                .font(.caption)
+                                .padding(4)
+                                .clipShape(RoundedRectangle(cornerRadius: 5))
+                            
+                            ForEach(Operator.allCases, id: \.self) { op in
+                                Text(op.rawValue)
+                                    .frame(width: geometry.size.width * 0.16, alignment: .center)
+                                    .font(.headline)
+                                    .padding(1)
+                                    .foregroundColor(Color.white)
+                                    .background(Color.blue.opacity(0.6))
+                                    .clipShape(RoundedRectangle(cornerRadius: 5))
+                            }
+                        }
+                        
+                        
+                        ScrollView {
+                            VStack(alignment: .leading, spacing: 12) {
+                                
+                                ForEach(HighScores.difficulties, id: \.self) { difficulty in
+                                    HStack(spacing: 4) {
+                                        Text("\(difficulty)")
+                                            .frame(width: geometry.size.width * 0.15, alignment: .center)
                                             .font(.caption)
                                             .padding(4)
-                                            .foregroundColor(highScoreTextColor(for: score))
-                                            .background(highScoreBackgroundColor(for: score))
+                                            .foregroundColor(difficultyTextColor(for: Double(difficulty)))
+                                            .background(ContentView.difficultyColor(for: Double(difficulty)))
                                             .clipShape(RoundedRectangle(cornerRadius: 5))
+                                        
+                                        ForEach(Operator.allCases, id: \.self) { op in
+                                            let score = highScores.highScore(for: difficulty, op: op)
+                                            Text("\(score)")
+                                                .frame(width: geometry.size.width * 0.15)  // 4 operators × 0.18 = ~0.72 + 0.15 = ~0.87
+                                                .font(.caption)
+                                                .padding(4)
+                                                .foregroundColor(highScoreTextColor(for: score))
+                                                .background(highScoreBackgroundColor(for: score))
+                                                .clipShape(RoundedRectangle(cornerRadius: 5))
+                                        }
                                     }
                                 }
                             }
+                            .padding()
                         }
-                        .padding()
                     }
-                    .navigationTitle("        \u{1F3C6}        \u{1F3C6}        \u{1F3C6}        \u{1F3C6}")
+                    .navigationTitle("\u{1F3C6}        \u{1F3C6}        \u{1F3C6}        \u{1F3C6}        \u{1F3C6}")
                     .navigationBarTitleDisplayMode(.inline)
                 }
             }
@@ -299,41 +322,6 @@ var body: some View {
     }
     
     
-//
-//    struct HighScoresView: View {
-//        @ObservedObject var highScores: HighScores
-//
-//        var body: some View {
-//            NavigationView {
-//                ScrollView {
-//                    VStack(alignment: .leading, spacing: 12) {
-//                        ForEach(HighScores.difficulties, id: \.self) { difficulty in
-//                            HStack {
-//                                Text("\(difficulty)")
-//                                    .frame(width: 50, alignment: .leading)
-//                                    .font(.caption)
-//                                    .background(ContentView.difficultyColor(for : Double(difficulty)))
-//                                
-//                                ForEach(Operator.allCases, id: \.self) { op in
-//                                    let score = highScores.highScore(for: difficulty, op: op)
-//                                    Text("\(score)")
-//                                        .frame(maxWidth: .infinity)
-//                                        .font(.caption)
-//                                        .padding(4)
-//                                        .foregroundColor(highScoreTextColor(for: score))
-//                                        .background(highScoreBackgroundColor(for: score))
-//                                        .clipShape(RoundedRectangle(cornerRadius: 5))
-//                                }
-//                            }
-//                        }
-//                    }
-//                    .padding()
-//                }
-//                .navigationTitle("        \u{1F3C6}        \u{1F3C6}        \u{1F3C6}        \u{1F3C6}")  // Unicode Trophy
-//                .navigationBarTitleDisplayMode(.inline)
-//            }
-//        }
-//    }
     
     
     // MARK: - Helpers
