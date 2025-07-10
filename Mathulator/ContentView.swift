@@ -24,8 +24,9 @@ struct ContentView: View {
 var body: some View {
     GeometryReader { geometry in
         VStack(spacing: 9) {
-            // Top Row: Logo and Menu
+            // Top Row: Logo and High score
             ZStack {
+                // Logo
                 Text("Mathulator")
                     .font(.headline)
                     .padding(3)
@@ -35,6 +36,7 @@ var body: some View {
 
                 HStack {
                     Spacer()
+                    // High score
                     Button(action: {
                         showHighScores = true
                     }) {
@@ -57,7 +59,7 @@ var body: some View {
                     let maxSymbols = 20
                     let filledSymbols = Array(symbols.suffix(maxSymbols))
                     let paddedSymbols = filledSymbols + Array(repeating: "questionmark.circle.fill", count: maxSymbols - filledSymbols.count)
-
+                    // Show pass/fail for latest 20 problems attempted
                     VStack(spacing: 4) {
                         ForEach(0..<2, id: \.self) { row in
                             HStack(spacing: 4) {
@@ -75,6 +77,7 @@ var body: some View {
                             }
                         }
                     }
+                    // Score percentage, will probably be changed to trophies
                     Text("\(scorePercentage())%")
                         .frame(width: geometry.size.height * 0.15, height: geometry.size.height * 0.08)  // WIP
                         .font(.title2)
@@ -84,6 +87,8 @@ var body: some View {
                         .frame(width: geometry.size.height * 0.15, height: geometry.size.height * 0.10)  // WIP
                     
                 }
+                // Show last problem wil pass/fail mark and correct solution
+                // Show incorrect answer as well?
                 HStack {
                     if let last = history.last {
                         Image(systemName: last.correct ? "checkmark.circle.fill" : "xmark.circle.fill")
@@ -102,14 +107,13 @@ var body: some View {
                     .foregroundColor(.white)
                     .clipShape(Capsule())
                 }
-                // Last problem show at the bottom of this section
             }  .frame(width: geometry.size.width * 0.85, height: geometry.size.height * 0.12)
                         .padding()
                         .background(Color.white.opacity(0.4))
                         .clipShape(RoundedRectangle(cornerRadius: 10))
 
             
-            // Problem Display
+            // Problem Display - Display current problem and input for answer
             VStack {
                 Text("\(currentProblem.num1) \(currentProblem.symbol) \(currentProblem.num2) =")
                     .font(.largeTitle)
@@ -119,7 +123,7 @@ var body: some View {
                     .foregroundColor(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
             
-                HStack(spacing: 10) {  // Added spacing
+                HStack(spacing: 10) {
                     Text(userInput.isEmpty ? "?" : userInput)
                         .font(.title)
                         .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.05)
@@ -159,27 +163,29 @@ var body: some View {
                     Button(action: {
                         submitAnswer()
                     }) {
-                        Text("\u{23CE}")
+                        Text("\u{23CE}")  // Unicode "Enter"/"Carrige return"
                             .font(.title2)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                             .foregroundColor(.black)
                             .background(Color.white.opacity(0.4))
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
-                    .frame(width: geometry.size.width * 0.25, height: geometry.size.height * 0.075)
+                    // Same size as numpad buttons, see func numButton
+                    .frame(width: geometry.size.width * 0.25, height: geometry.size.height * 0.08)
                     .contentShape(Rectangle()) // Makes entire button tappable
                 }
             }
             .padding()
             .background(Color.orange)
             .frame(height: geometry.size.height * 0.36)
-            .clipShape(RoundedRectangle(cornerRadius: 15))  //
+            .clipShape(RoundedRectangle(cornerRadius: 15))
             
             // Difficulty Slider
             HStack {
                 Slider(value: $difficulty, in: ContentView.minDifficulty...ContentView.maxDifficulty, step: 1)
                     .accentColor(.green)
                     .frame(height: geometry.size.height * 0.04) // shorter height
+                // Show different colors to give an idea about difficulty
                 Text("\(Int(difficulty))")
                     .font(.caption)
                     .frame(minWidth: geometry.size.width * 0.05)
@@ -241,29 +247,31 @@ var body: some View {
                     VStack {
                         
                         HStack {
+                            // Fixed top row in High scores
                             Text("")
                                 .frame(width: geometry.size.width * 0.15, alignment: .center)
                                 .font(.caption)
                                 .padding(4)
                                 .clipShape(RoundedRectangle(cornerRadius: 5))
-                            
+                            // Show each operator on top of their columns
                             ForEach(Operator.allCases, id: \.self) { op in
                                 Text(op.rawValue)
                                     .frame(width: geometry.size.width * 0.16, alignment: .center)
                                     .font(.headline)
-                                    .padding(1)
+//                                    .padding(1)
                                     .foregroundColor(Color.white)
-                                    .background(Color.blue.opacity(0.6))
+                                    .background(Color.blue.opacity(0.8))
                                     .clipShape(RoundedRectangle(cornerRadius: 5))
                             }
                         }
                         
-                        
+                        // List entire high score table
                         ScrollView {
                             VStack(alignment: .leading, spacing: 12) {
                                 
                                 ForEach(HighScores.difficulties, id: \.self) { difficulty in
                                     HStack(spacing: 4) {
+                                        // Use custom colors for each row heading
                                         Text("\(difficulty)")
                                             .frame(width: geometry.size.width * 0.15, alignment: .center)
                                             .font(.caption)
@@ -278,6 +286,7 @@ var body: some View {
                                                 .frame(width: geometry.size.width * 0.15)  // 4 operators × 0.18 = ~0.72 + 0.15 = ~0.87
                                                 .font(.caption)
                                                 .padding(4)
+                                                // Custom colors for various score levels
                                                 .foregroundColor(highScoreTextColor(for: score))
                                                 .background(highScoreBackgroundColor(for: score))
                                                 .clipShape(RoundedRectangle(cornerRadius: 5))
@@ -288,7 +297,7 @@ var body: some View {
                             .padding()
                         }
                     }
-                    .navigationTitle("\u{1F3C6}        \u{1F3C6}        \u{1F3C6}        \u{1F3C6}        \u{1F3C6}")
+                    .navigationTitle("\u{1F3C6}        \u{1F3C6}        \u{1F3C6}")  // Unicode "Trophy"
                     .navigationBarTitleDisplayMode(.inline)
                 }
             }
@@ -324,7 +333,6 @@ var body: some View {
                 currentStreak = 0
             }
         highScores.updateIfHigher(streak: currentStreak, difficulty: Int(difficulty), op: selectedOperator)
-
         userInput = ""
         newProblem()
     }
