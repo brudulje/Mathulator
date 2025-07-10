@@ -71,7 +71,7 @@ var body: some View {
                                         .frame(width: 16, height: 16)
                                         .foregroundColor(
                                             paddedSymbols[index] == "checkmark.circle.fill" ? .green :
-                                            paddedSymbols[index] == "xmark.circle.fill" ? .red : .gray
+                                                paddedSymbols[index] == "xmark.circle.fill" ? .red.opacity(0.85) : .white.opacity(0.85)
                                         )
                                 }.animation(.easeInOut, value: history.count)
                             }
@@ -86,7 +86,7 @@ var body: some View {
                         .padding(.vertical, 2)
                         .background(Color.white.opacity(0.4))
                         .clipShape(RoundedRectangle(cornerRadius: 10))
-                        .frame(width: geometry.size.height * 0.15, height: geometry.size.height * 0.10)  // WIP
+//                        .frame(width: geometry.size.height * 0.15, height: geometry.size.height * 0.10)  // WIP
                     
                 }
                 // Show last problem wil pass/fail mark and correct solution
@@ -94,10 +94,10 @@ var body: some View {
                 HStack {
                     if let last = history.last {
                         Image(systemName: last.correct ? "checkmark.circle.fill" : "xmark.circle.fill")
-                            .foregroundColor(last.correct ? .green : .red)
+                            .foregroundColor(last.correct ? .green : .red.opacity(0.85))
                     } else {
                         Image(systemName: "questionmark.circle.fill")
-                            .foregroundColor(.gray)
+                            .foregroundColor(.white)
                     }
 
                     Text(history.last.map {
@@ -263,11 +263,16 @@ var body: some View {
                             // Show each operator on top of their columns
                             ForEach(Operator.allCases, id: \.self) { op in
                                 Text(op.rawValue)
-                                    .frame(width: geometry.size.width * 0.16, alignment: .center)
-                                    .font(.headline)
+                                    .frame(width: geometry.size.width * 0.16, height: geometry.size.height * 0.06, alignment: .center)
+                                    .font(.title2)
 //                                    .padding(1)
                                     .foregroundColor(Color.white)
-                                    .background(Color.blue.opacity(0.8))
+                                    .background(
+                                            ZStack {
+                                                Color.blue
+                                                Color.black.opacity(0.3)
+                                            }
+                                        )//.background(Color.blue.opacity(0.8))
                                     .clipShape(RoundedRectangle(cornerRadius: 5))
                             }
                         }
@@ -306,7 +311,8 @@ var body: some View {
                             .padding()
                         }
                     }
-                    .navigationTitle("\u{1F3C6}        \u{1F3C6}        \u{1F3C6}        \u{1F3C6}        \u{1F3C6}")  // Unicode "Trophy"
+//                    .navigationTitle("\u{1F3C6}        \u{1F3C6}        \u{1F3C6}        \u{1F3C6}        \u{1F3C6}")  // Unicode "Trophy"
+                    .navigationTitle("\u{1F3C6} High scores \u{1F3C6}")
                     .navigationBarTitleDisplayMode(.inline)
                 }
             }
@@ -416,13 +422,13 @@ var body: some View {
     
     static func trophyText(for score: Int) -> String {
         switch score {
-        case 0...2:
+        case 0...4:
             return ""
-        case 3...5:
+        case 5...11:
             return "\u{1F31F}"  // Unicode star
-        case 6...7:
+        case 12...19:
             return "\u{1F31F} \u{1F3C5}"  // Unicode star, medal
-        case 8...:
+        case 20...:
             return "\u{1F31F}\u{1F3C5}\u{1F451}"  // Unicode star, medal, crown
         default:
             return "\(score)"
