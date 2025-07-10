@@ -1,7 +1,7 @@
 
 # Xcode
 build/
-DerivedData/
+*/Assets.xcassets/AppIcon.appiconset/*
 
 # Xcode workspace and user settings
 *.xcworkspace/xcuserdata/
