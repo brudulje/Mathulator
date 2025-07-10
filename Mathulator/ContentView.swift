@@ -78,10 +78,12 @@ var body: some View {
                         }
                     }
                     // Score percentage, will probably be changed to trophies
-                    Text("\(scorePercentage())%")
+//                    let score = highScores.highScore(for: difficulty, op: selectedOperator)  // Find op
+//                    let symbols = trophyText(for: score)
+                    Text("Blupp")
                         .frame(width: geometry.size.height * 0.15, height: geometry.size.height * 0.08)  // WIP
-                        .font(.title2)
-                        .padding(.vertical, 4)
+                        .font(.title3)
+                        .padding(.vertical, 2)
                         .background(Color.white.opacity(0.4))
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                         .frame(width: geometry.size.height * 0.15, height: geometry.size.height * 0.10)  // WIP
