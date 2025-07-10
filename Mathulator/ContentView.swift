@@ -97,7 +97,7 @@ var body: some View {
                             .foregroundColor(last.correct ? .green : .red.opacity(0.85))
                     } else {
                         Image(systemName: "questionmark.circle.fill")
-                            .foregroundColor(.white)
+                            .foregroundColor(.white.opacity(0.85))
                     }
 
                     Text(history.last.map {
