@@ -82,7 +82,7 @@ var body: some View {
                         .frame(width: geometry.size.height * 0.15, height: geometry.size.height * 0.08)  // WIP
                         .font(.title2)
                         .padding(.vertical, 4)
-                        .background(Color.green)
+                        .background(Color.white.opacity(0.4))
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                         .frame(width: geometry.size.height * 0.15, height: geometry.size.height * 0.10)  // WIP
                     
@@ -109,7 +109,7 @@ var body: some View {
                 }
             }  .frame(width: geometry.size.width * 0.85, height: geometry.size.height * 0.12)
                         .padding()
-                        .background(Color.white.opacity(0.4))
+                        .background(Color.black.opacity(0.3))
                         .clipShape(RoundedRectangle(cornerRadius: 10))
 
             
@@ -201,21 +201,25 @@ var body: some View {
             .padding(.horizontal)
             .frame(height: geometry.size.height * 0.03)
 
+            
             // Operator Selection
             HStack {
                 ForEach(Operator.allCases, id: \.self) { op in
-                    Button(op.rawValue) {
+                    Button(action: {
                         highScores.updateIfHigher(streak: currentStreak, difficulty: Int(difficulty), op: selectedOperator)
                         currentStreak = 0
                         selectedOperator = op
                         newProblem()
                         history.removeAll()
+                    }) {
+                        Text("\(op.rawValue)")
+                        
+                            .frame(width: geometry.size.width * 0.22, height: geometry.size.height * 0.08)
+                            .font(.title)
+                            .background(op == selectedOperator ? Color.white.opacity(0.4) : Color.black.opacity(0.4))
+                            .foregroundColor(op == selectedOperator ? Color.black : Color.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
-                    .frame(width: geometry.size.width * 0.22, height: geometry.size.height * 0.08)
-                    .font(.title)
-                    .background(op == selectedOperator ? Color.white.opacity(0.4) : Color.black.opacity(0.4))
-                    .foregroundColor(op == selectedOperator ? Color.black : Color.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
             }
             .frame(height: geometry.size.height * 0.12)
@@ -237,6 +241,7 @@ var body: some View {
     }
 }
     
+    // MARK: - HighScoreView
     
     struct HighScoresView: View {
         @ObservedObject var highScores: HighScores
@@ -282,13 +287,16 @@ var body: some View {
                                         
                                         ForEach(Operator.allCases, id: \.self) { op in
                                             let score = highScores.highScore(for: difficulty, op: op)
-                                            Text("\(score)")
+                                            let symbols = trophyText(for: score)
+                                            
+                                            Text("\(symbols)")
                                                 .frame(width: geometry.size.width * 0.15)  // 4 operators × 0.18 = ~0.72 + 0.15 = ~0.87
                                                 .font(.caption)
                                                 .padding(4)
                                                 // Custom colors for various score levels
                                                 .foregroundColor(highScoreTextColor(for: score))
                                                 .background(highScoreBackgroundColor(for: score))
+//                                                .background(Color.black.opacity(0.2))
                                                 .clipShape(RoundedRectangle(cornerRadius: 5))
                                         }
                                     }
@@ -297,13 +305,12 @@ var body: some View {
                             .padding()
                         }
                     }
-                    .navigationTitle("\u{1F3C6}        \u{1F3C6}        \u{1F3C6}")  // Unicode "Trophy"
+                    .navigationTitle("\u{1F3C6}        \u{1F3C6}        \u{1F3C6}        \u{1F3C6}        \u{1F3C6}")  // Unicode "Trophy"
                     .navigationBarTitleDisplayMode(.inline)
                 }
             }
         }
     }
-    
     
     // MARK: - Helpers
 
@@ -350,16 +357,16 @@ var body: some View {
     
     static func highScoreBackgroundColor(for score: Int) -> Color {
         switch score {
-        case 0...2:
+        case 0:
             return Color.gray.opacity(0.1)
-        case 3...6:
-            return Color.black.opacity(0.3)
-        case 7...11:
-            return Color.red.opacity(0.4)
-        case 12...19:
-            return Color.yellow.opacity(0.4)
-        case 20...:
-            return Color.green.opacity(0.4)
+        case 1...:
+            return Color.blue.opacity(0.3)
+//        case 7...11:
+//            return Color.red.opacity(0.4)
+//        case 12...19:
+//            return Color.yellow.opacity(0.4)
+//        case 20...:
+//            return Color.green.opacity(0.4)
         default:
             return Color.gray.opacity(0.1)
         }
@@ -376,24 +383,44 @@ var body: some View {
             }
     }
     
-    static func difficultyHue(for difficulty: Double) -> Double {
+//    static func difficultyHue(for difficulty: Double) -> Double {
+//        return Double((difficulty - minDifficulty) / (maxDifficulty - minDifficulty))
+//    }
+
+    static func difficultySaturation(for difficulty: Double) -> Double {
         return Double((difficulty - minDifficulty) / (maxDifficulty - minDifficulty))
     }
-
     static func difficultyColor(for difficulty: Double) -> Color {
-        let hue = difficultyHue(for: difficulty)
-        return Color(hue: hue, saturation: 0.8, brightness: 1.0)
+//        let hue = difficultyHue(for: difficulty)
+        let saturation = difficultySaturation(for: difficulty)
+        return Color(hue: 0.1, saturation: saturation, brightness: 0.94)
     }
 
     static func difficultyTextColor(for difficulty: Double) -> Color {
-        let hue = difficultyHue(for: difficulty)
-        switch hue {
-        case 0.0..<0.1:
-            return .white
-        case 0.1..<0.6:
-            return .black
+//        let hue = difficultyHue(for: difficulty)
+//        switch hue {
+//        case 0.0..<0.1:
+//            return .white
+//        case 0.1..<0.6:
+//            return .black
+//        default:
+//            return .white
+//        }
+        return Color.black
+    }
+    
+    static func trophyText(for score: Int) -> String {
+        switch score {
+        case 0...2:
+            return "\(score)"
+        case 3...5:
+            return "\u{1F31F}"  // Unicode star
+        case 6...7:
+            return "\u{1F31F} \u{1F3C5}"  // Unicode star, medal
+        case 8...:
+            return "\u{1F31F}\u{1F3C5}\u{1F451}"  // Unicode star, medal, crown
         default:
-            return .white
+            return "\(score)"
         }
     }
 }
