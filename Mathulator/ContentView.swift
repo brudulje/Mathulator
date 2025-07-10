@@ -78,9 +78,9 @@ var body: some View {
                         }
                     }
                     // Score percentage, will probably be changed to trophies
-//                    let score = highScores.highScore(for: difficulty, op: selectedOperator)  // Find op
+//                    let score = highScores.highScore(for: difficulty, op: selectedOperator)
 //                    let symbols = trophyText(for: score)
-                    Text("Blupp")
+                    Text(scoreSymbols)
                         .frame(width: geometry.size.height * 0.15, height: geometry.size.height * 0.08)  // WIP
                         .font(.title3)
                         .padding(.vertical, 2)
@@ -290,7 +290,6 @@ var body: some View {
                                         ForEach(Operator.allCases, id: \.self) { op in
                                             let score = highScores.highScore(for: difficulty, op: op)
                                             let symbols = trophyText(for: score)
-                                            
                                             Text("\(symbols)")
                                                 .frame(width: geometry.size.width * 0.15)  // 4 operators × 0.18 = ~0.72 + 0.15 = ~0.87
                                                 .font(.caption)
@@ -314,6 +313,10 @@ var body: some View {
         }
     }
     
+    var scoreSymbols: String {
+        let score = highScores.highScore(for: Int(difficulty), op: selectedOperator)
+        return ContentView.trophyText(for: score)
+    }
     // MARK: - Helpers
 
     func numButton(_ label: String, geometry: GeometryProxy) -> some View {
@@ -414,7 +417,7 @@ var body: some View {
     static func trophyText(for score: Int) -> String {
         switch score {
         case 0...2:
-            return "\(score)"
+            return ""
         case 3...5:
             return "\u{1F31F}"  // Unicode star
         case 6...7:
