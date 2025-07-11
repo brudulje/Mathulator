@@ -25,6 +25,9 @@ icons=(
   "Icon-1024 1024 1x ios-marketing"
 )
 
+# Flatten image to avoid transparency
+sips -s format png --padColor FFFFFF $INPUT_ICON
+
 # Generate images
 for entry in "${icons[@]}"; do
   name=$(echo "$entry" | awk '{print $1}')
