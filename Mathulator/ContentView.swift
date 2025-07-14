@@ -310,7 +310,7 @@ var body: some View {
                                             .frame(width: geometry.size.width * 0.15, alignment: .center)
                                             .font(.caption)
                                             .padding(4)
-                                            .foregroundColor(difficultyTextColor(for: Double(difficulty)))
+                                            .foregroundColor(Color.black)
                                             .background(ContentView.difficultyColor(for: Double(difficulty)))
                                             .clipShape(RoundedRectangle(cornerRadius: 5))
                                         
@@ -322,9 +322,7 @@ var body: some View {
                                                 .font(.caption)
                                                 .padding(4)
                                                 // Custom colors for various score levels
-                                                .foregroundColor(highScoreTextColor(for: score))
                                                 .background(highScoreBackgroundColor(for: score))
-//                                                .background(Color.black.opacity(0.2))
                                                 .clipShape(RoundedRectangle(cornerRadius: 5))
                                         }
                                     }
@@ -394,52 +392,17 @@ var body: some View {
             return Color.gray.opacity(0.1)
         case 1...:
             return Color.blue.opacity(0.3)
-//        case 7...11:
-//            return Color.red.opacity(0.4)
-//        case 12...19:
-//            return Color.yellow.opacity(0.4)
-//        case 20...:
-//            return Color.green.opacity(0.4)
         default:
             return Color.gray.opacity(0.1)
         }
     }
-        
-        static func highScoreTextColor(for score: Int) -> Color {
-            switch score {
-            case 0:
-                return Color.gray.opacity(0.5)
-            case 1...:
-                return Color.black
-            default:
-                return Color.black
-            }
-    }
-    
-//    static func difficultyHue(for difficulty: Double) -> Double {
-//        return Double((difficulty - minDifficulty) / (maxDifficulty - minDifficulty))
-//    }
 
     static func difficultySaturation(for difficulty: Double) -> Double {
         return Double((difficulty - minDifficulty) / (maxDifficulty - minDifficulty))
     }
     static func difficultyColor(for difficulty: Double) -> Color {
-//        let hue = difficultyHue(for: difficulty)
         let saturation = difficultySaturation(for: difficulty)
         return Color(hue: 0.1, saturation: saturation, brightness: 0.94)
-    }
-
-    static func difficultyTextColor(for difficulty: Double) -> Color {
-//        let hue = difficultyHue(for: difficulty)
-//        switch hue {
-//        case 0.0..<0.1:
-//            return .white
-//        case 0.1..<0.6:
-//            return .black
-//        default:
-//            return .white
-//        }
-        return Color.black
     }
     
     static func trophyText(for score: Int) -> String {
