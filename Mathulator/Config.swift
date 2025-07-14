@@ -8,7 +8,7 @@
 
 struct DifficultyConfig {
     static let minDifficulty: Double = 6
-    static let maxDifficulty: Double = 35
+    static let maxDifficulty: Double = 30
     static var difficulties: [Int] {
         Array(Int(minDifficulty)...Int(maxDifficulty))
     }
