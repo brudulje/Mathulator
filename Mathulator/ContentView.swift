@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @State private var currentProblem = generateProblem(difficulty: 11, op: .add)
     @State private var userInput = ""
-    @State private var history: [(problem: MathProblem, correct: Bool)] = [] // true = correct, false = wrong
+    @State private var history: [(problem: MathProblem, correct: Bool, guess: Int)] = [] // true = correct, false = wrong
     @State private var selectedOperator: Operator = .add
     @State private var difficulty: Double = 11
     @State private var showHighScores = false
@@ -77,42 +77,64 @@ var body: some View {
                             }
                         }
                     }
-                    // Score percentage, will probably be changed to trophies
-//                    let score = highScores.highScore(for: difficulty, op: selectedOperator)
-//                    let symbols = trophyText(for: score)
                     Text(scoreSymbols)
                         .frame(width: geometry.size.height * 0.15, height: geometry.size.height * 0.08)  // WIP
                         .font(.title3)
                         .padding(.vertical, 2)
                         .background(Color.white.opacity(0.4))
                         .clipShape(RoundedRectangle(cornerRadius: 10))
-//                        .frame(width: geometry.size.height * 0.15, height: geometry.size.height * 0.10)  // WIP
                     
                 }
                 // Show last problem wil pass/fail mark and correct solution
                 // Show incorrect answer as well?
+                
                 HStack {
                     if let last = history.last {
-                        Image(systemName: last.correct ? "checkmark.circle.fill" : "xmark.circle.fill")
-                            .foregroundColor(last.correct ? .green : .red.opacity(0.85))
-                    } else {
-                        Image(systemName: "questionmark.circle.fill")
-                            .foregroundColor(.white.opacity(0.85))
-                    }
+                        let isCorrect = last.correct
+                        let symbolColor = isCorrect ? Color.green.opacity(0.85) : Color.red.opacity(0.85)
+                        let iconName = isCorrect ? "checkmark.circle.fill" : "xmark.circle.fill"
 
-                    Text(history.last.map {
-                        "\($0.problem.num1) \($0.problem.symbol) \($0.problem.num2) = \($0.problem.answer)"
-                    } ?? "")
-                    .frame(maxWidth: .infinity, minHeight: 25, alignment: .leading)
-                    .padding(.leading, 15)
-                    .background(Color.black.opacity(0.8))
-                    .foregroundColor(.white)
-                    .clipShape(Capsule())
+                        Image(systemName: iconName)
+                            .resizable()
+                            .frame(width: 22, height: 22)
+                            .foregroundColor(symbolColor)
+                        if isCorrect {  // Passed last problem
+                            Text("\(last.problem.num1) \(last.problem.symbol) \(last.problem.num2) = \(last.problem.answer)")
+                                .frame(maxWidth: .infinity, minHeight: 25, alignment: .leading)
+                                .padding(.leading, 10)
+                                .background(Color.black.opacity(0.8))
+                                .foregroundColor(.white)
+                                .clipShape(Capsule())
+                        } else {  // Failed last problem
+                            Text("\(last.problem.num1) \(last.problem.symbol) \(last.problem.num2) = \(last.problem.answer) \u{2260} \(last.guess)")
+                                .frame(maxWidth: .infinity, minHeight: 25, alignment: .leading)
+                                .padding(.leading, 10)
+                                .background(Color.black.opacity(0.8))
+                                .foregroundColor(.white)
+                                .clipShape(Capsule())
+                        }
+                    } else {  // history.last does not exist
+                        Image(systemName: "questionmark.circle.fill")
+                            .resizable()
+                            .frame(width: 22, height: 22)
+                            .foregroundColor(.white.opacity(0.85))
+
+                        Text("")
+                            .frame(maxWidth: .infinity, minHeight: 25, alignment: .leading)
+                            .padding(.leading, 10)
+                            .background(Color.black.opacity(0.8))
+                            .foregroundColor(.white)
+                            .clipShape(Capsule())
+                    }
                 }
-            }  .frame(width: geometry.size.width * 0.85, height: geometry.size.height * 0.12)
-                        .padding()
-                        .background(Color.black.opacity(0.3))
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                .frame(maxWidth: .infinity)
+//                .background(Color.orange.opacity(0.2))  // Debugging UI
+            }
+            .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.17)  // Size of history box
+//            .background(Color.orange.opacity(0.2))  // Debugging UI
+            .padding(3)  // PADDING!!!
+            .background(Color.black.opacity(0.3))
+            .clipShape(RoundedRectangle(cornerRadius: 10))
 
             
             // Problem Display - Display current problem and input for answer
@@ -343,7 +365,7 @@ var body: some View {
     func submitAnswer() {
         guard let guess = Int(userInput) else { return }
         let correct = guess == currentProblem.answer
-        history.append((currentProblem, correct))
+        history.append((currentProblem, correct, guess))
         
         if correct {
                 currentStreak += 1
