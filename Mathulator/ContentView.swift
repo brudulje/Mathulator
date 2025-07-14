@@ -331,8 +331,7 @@ var body: some View {
                             .padding()
                         }
                     }
-//                    .navigationTitle("\u{1F3C6}        \u{1F3C6}        \u{1F3C6}        \u{1F3C6}        \u{1F3C6}")  // Unicode "Trophy"
-                    .navigationTitle("\u{1F3C6} High scores \u{1F3C6}")
+                    .navigationTitle("\u{1F3C6}\u{1F3C6}\u{1F3C6}")  // "\u{1F3C6} High scores \u{1F3C6}"Unicode "Trophy"
                     .navigationBarTitleDisplayMode(.inline)
                 }
             }
