@@ -1,6 +1,6 @@
 //
-//  mattebokaApp.swift
-//  matteboka
+//  MathulatorApp.swift
+//  Mathulator
 //
 //  Created by Joachim Seland Graff on 2025-07-04.
 //

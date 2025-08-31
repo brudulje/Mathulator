@@ -1,5 +1,6 @@
 //
 //  MathGenerator.swift
+//  Mathulator
 //
 //  Created by Joachim Seland Graff on 2025-07-04.
 //
@@ -15,9 +16,9 @@ struct MathProblem {
 }
 
 enum Operator: String, CaseIterable {
-    case mult = "×"
     case add = "+"
     case sub = "-"
+    case mult = "×"
     case div = "÷"
 }
 
