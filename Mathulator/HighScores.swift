@@ -30,6 +30,15 @@ class HighScores: ObservableObject {
             self.matrix = Array(repeating: Array(repeating: 0, count: Self.operatorCount), count: Self.difficulties.count)
         }
     }
+
+    func reset(difficulty: Int, op: Operator) {
+        guard let row = HighScores.difficulties.firstIndex(of: difficulty),
+              let col = Operator.allCases.firstIndex(of: op)
+        else { return }
+        
+        matrix[row][col] = 0
+    }
+
     func updateIfHigher(streak: Int, difficulty: Int, op: Operator) {
         guard let row = HighScores.difficulties.firstIndex(of: difficulty),
               let col = Operator.allCases.firstIndex(of: op)

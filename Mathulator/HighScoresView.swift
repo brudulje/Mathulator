@@ -9,7 +9,10 @@ import SwiftUI
 
 struct HighScoresView: View {
     @ObservedObject var highScores: HighScores
-
+    @State private var selectedDifficulty: Int? = nil
+    @State private var selectedOperator: Operator? = nil
+    @State private var showDetail = false
+    
     var body: some View {
         GeometryReader { geometry in
             NavigationView {
@@ -25,7 +28,7 @@ struct HighScoresView: View {
                         // Show each operator on top of their columns
                         ForEach(Operator.allCases, id: \.self) { op in
                             Text(op.rawValue)
-                                .frame(width: geometry.size.width * 0.16, height: geometry.size.height * 0.06, alignment: .center)
+                                .frame(width: geometry.size.width * 0.1618, height: geometry.size.width * 0.1, alignment: .center)
                                 .font(.title2)
 //                                    .padding(1)
                                 .foregroundColor(Color.white)
@@ -57,13 +60,25 @@ struct HighScoresView: View {
                                     ForEach(Operator.allCases, id: \.self) { op in
                                         let score = highScores.highScore(for: difficulty, op: op)
                                         let symbols = HighScoresView.trophyText(for: score)
-                                        Text("\(symbols)")
-                                            .frame(width: geometry.size.width * 0.15)  // 4 operators × 0.18 = ~0.72 + 0.15 = ~0.87
-                                            .font(.caption)
-                                            .padding(4)
-                                            // Custom colors for various score levels
-                                            .background(HighScoresView.highScoreBackgroundColor(for: score))
-                                            .clipShape(RoundedRectangle(cornerRadius: 5))
+                                        Button(action: {
+                                            selectedDifficulty = difficulty
+                                            selectedOperator = op
+                                            showDetail = true
+                                        }) {
+                                            Text(symbols)
+                                                .frame(width: geometry.size.width * 0.15)
+                                                .font(.caption)
+                                                .padding(4)
+                                                .background(HighScoresView.highScoreBackgroundColor(for: score))
+                                                .clipShape(RoundedRectangle(cornerRadius: 5))
+                                        }
+//                                        Text("\(symbols)")
+//                                            .frame(width: geometry.size.width * 0.15)  // 4 operators × 0.18 = ~0.72 + 0.15 = ~0.87
+//                                            .font(.caption)
+//                                            .padding(4)
+//                                            // Custom colors for various score levels
+//                                            .background(HighScoresView.highScoreBackgroundColor(for: score))
+//                                            .clipShape(RoundedRectangle(cornerRadius: 5))
                                     }
                                 }
                             }
@@ -73,6 +88,27 @@ struct HighScoresView: View {
                 }
                 .navigationTitle("\u{1F3C6}\u{1F3C6}\u{1F3C6}")  // "\u{1F3C6} High scores \u{1F3C6}"Unicode "Trophy"
                 .navigationBarTitleDisplayMode(.inline)
+            }
+            .sheet(isPresented: $showDetail) {
+                if let difficulty = selectedDifficulty, let op = selectedOperator {
+                    if #available(iOS 16.0, *) {
+                        HighScoreDetailView(
+                            difficulty: difficulty,
+                            op: op,
+                            highScores: highScores
+                        )
+                        .presentationDetents([.medium])//[.medium, .large]) // start medium, expandable
+                        .presentationDragIndicator(.visible)
+                    } else {
+                        // Fallback on earlier versions
+                        HighScoreDetailView(
+                            difficulty: difficulty,
+                            op: op,
+                            highScores: highScores
+                        )
+                    }
+
+                }
             }
         }
     }
