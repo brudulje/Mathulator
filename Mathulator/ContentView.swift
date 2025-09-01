@@ -15,6 +15,7 @@ struct ContentView: View {
     @State private var difficulty: Double = 11
     @State private var showHighScores = false
     @State private var currentStreak = 0
+    @State private var showHighScoreDetail = false
     
     @StateObject private var highScores = HighScores()
     
@@ -77,12 +78,34 @@ var body: some View {
                             }
                         }
                     }
-                    Text(scoreSymbols)
-                        .frame(width: geometry.size.height * 0.15, height: geometry.size.height * 0.08)  // WIP
-                        .font(.title3)
-                        .padding(.vertical, 2)
-                        .background(Color.white.opacity(0.4))
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                    Button(action: {
+                        showHighScoreDetail = true
+                    }) {
+                        Text(scoreSymbols)
+                            .frame(width: geometry.size.height * 0.16, height: geometry.size.height * 0.08)
+                            .font(.title3)
+                            .padding(.vertical, 2)
+                            .background(Color.white.opacity(0.4))
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                    }
+                    .sheet(isPresented: $showHighScoreDetail) {
+                        if #available(iOS 16.0, *) {
+                            HighScoreDetailView(
+                                difficulty: Int(difficulty),
+                                op: selectedOperator,
+                                highScores: highScores
+                            )
+                            .presentationDetents([.medium])
+                            .presentationDragIndicator(.visible)
+                        } else {
+                            // Fallback for iOS <16: full-screen sheet
+                            HighScoreDetailView(
+                                difficulty: Int(difficulty),
+                                op: selectedOperator,
+                                highScores: highScores
+                            )
+                        }
+                    }
                     
                 }
                 // Show last problem wil pass/fail mark and correct solution
@@ -265,15 +288,12 @@ var body: some View {
     }
 }
     
-    // MARK: - HighScoreView
-    
+    // MARK: - Helpers
 
-    
     var scoreSymbols: String {
         let score = highScores.highScore(for: Int(difficulty), op: selectedOperator)
         return HighScoresView.trophyText(for: score)
     }
-    // MARK: - Helpers
 
     func numButton(_ label: String, geometry: GeometryProxy) -> some View {
         Button(action: {
