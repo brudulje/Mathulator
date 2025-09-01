@@ -9,9 +9,7 @@ import SwiftUI
 
 struct HighScoresView: View {
     @ObservedObject var highScores: HighScores
-    @State private var selectedDifficulty: Int? = nil
-    @State private var selectedOperator: Operator? = nil
-    @State private var showDetail = false
+    @State private var selectedDetail: ScoreDetail?
     
     var body: some View {
         GeometryReader { geometry in
@@ -28,7 +26,7 @@ struct HighScoresView: View {
                         // Show each operator on top of their columns
                         ForEach(Operator.allCases, id: \.self) { op in
                             Text(op.rawValue)
-                                .frame(width: geometry.size.width * 0.1618, height: geometry.size.width * 0.1, alignment: .center)
+                                .frame(width: geometry.size.width * 0.16, height: geometry.size.height * 0.06, alignment: .center)
                                 .font(.title2)
 //                                    .padding(1)
                                 .foregroundColor(Color.white)
@@ -61,9 +59,7 @@ struct HighScoresView: View {
                                         let score = highScores.highScore(for: difficulty, op: op)
                                         let symbols = HighScoresView.trophyText(for: score)
                                         Button(action: {
-                                            selectedDifficulty = difficulty
-                                            selectedOperator = op
-                                            showDetail = true
+                                            selectedDetail = ScoreDetail(difficulty: difficulty, op: op)
                                         }) {
                                             Text(symbols)
                                                 .frame(width: geometry.size.width * 0.15)
@@ -71,7 +67,7 @@ struct HighScoresView: View {
                                                 .padding(4)
                                                 .background(HighScoresView.highScoreBackgroundColor(for: score))
                                                 .clipShape(RoundedRectangle(cornerRadius: 5))
-                                        }
+                                              }
 //                                        Text("\(symbols)")
 //                                            .frame(width: geometry.size.width * 0.15)  // 4 operators × 0.18 = ~0.72 + 0.15 = ~0.87
 //                                            .font(.caption)
@@ -89,25 +85,21 @@ struct HighScoresView: View {
                 .navigationTitle("\u{1F3C6}\u{1F3C6}\u{1F3C6}")  // "\u{1F3C6} High scores \u{1F3C6}"Unicode "Trophy"
                 .navigationBarTitleDisplayMode(.inline)
             }
-            .sheet(isPresented: $showDetail) {
-                if let difficulty = selectedDifficulty, let op = selectedOperator {
-                    if #available(iOS 16.0, *) {
-                        HighScoreDetailView(
-                            difficulty: difficulty,
-                            op: op,
-                            highScores: highScores
-                        )
-                        .presentationDetents([.medium])//[.medium, .large]) // start medium, expandable
-                        .presentationDragIndicator(.visible)
-                    } else {
-                        // Fallback on earlier versions
-                        HighScoreDetailView(
-                            difficulty: difficulty,
-                            op: op,
-                            highScores: highScores
-                        )
-                    }
-
+            .sheet(item: $selectedDetail) { detail in
+                if #available(iOS 16.0, *) {
+                    HighScoreDetailView(
+                        difficulty: detail.difficulty,
+                        op: detail.op,
+                        highScores: highScores
+                    )
+                    .presentationDetents([.medium])
+                    .presentationDragIndicator(.visible)
+                } else {
+                    HighScoreDetailView(
+                        difficulty: detail.difficulty,
+                        op: detail.op,
+                        highScores: highScores
+                    )
                 }
             }
         }
@@ -140,3 +132,8 @@ struct HighScoresView: View {
     }
 }
 
+struct ScoreDetail: Identifiable {
+    let id = UUID()
+    let difficulty: Int
+    let op: Operator
+}
