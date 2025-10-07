@@ -43,15 +43,15 @@ struct HighScoreDetailView: View {
                         .background(ContentView.difficultyColor(for: Double(difficulty)))
                         .clipShape(RoundedRectangle(cornerRadius: 5))
                 }
+                
                 HStack{
                     let score = highScores.highScore(for: difficulty, op: op)
                     let symbols = HighScoresView.trophyText(for: score)
                     
-                    Text("Streak:").font(.title2)
-                    Text("\(score)").font(.title2)
-//                    let score = highScores.highScore(for: difficulty, op: op)
-                    
-                    Text("Trophies:").font(.title2)
+                    Text("Streak:").font(.title3)
+                    Text("\(score)").font(.title3)
+
+                    Text("Trophies:").font(.title3)
                     Text(symbols)
                         .frame(width: geometry.size.width * 0.26, height: geometry.size.width * 0.13)
                         .font(.title3)
