@@ -21,280 +21,280 @@ struct ContentView: View {
     
     static let minDifficulty = DifficultyConfig.minDifficulty
     static let maxDifficulty = DifficultyConfig.maxDifficulty
-
-var body: some View {
-    GeometryReader { geometry in
-        VStack(spacing: 9) {
-            // Top Row: Logo and High score
-            ZStack {
-                // Logo
-                Text("Mathulator")
-                    .font(.headline)
-                    .padding(3)
-                    .background(Color.black.opacity(0.2))
-                    .foregroundColor(.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 5))
-
-                HStack {
-                    Spacer()
-                    // High score
-                    Button(action: {
-                        showHighScores = true
-                    }) {
-                        Text("\u{1F3C6}")  // Unicode Trophy
-                            .font(.headline)
-                            .frame(maxWidth: geometry.size.width * 0.12, maxHeight: geometry.size.height * 0.06)
-                            .background(Color.black.opacity(0.2))
-                            .clipShape(RoundedRectangle(cornerRadius: 5))
-                            .padding(.trailing, 12)
+    
+    var body: some View {
+        GeometryReader { geometry in
+            VStack(spacing: 9) {
+                // Top Row: Logo and High score
+                ZStack {
+                    // Logo
+                    Text("Mathulator")
+                        .font(.headline)
+                        .padding(3)
+                        .background(Color.black.opacity(0.2))
+                        .foregroundColor(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 5))
+                    
+                    HStack {
+                        Spacer()
+                        // High score
+                        Button(action: {
+                            showHighScores = true
+                        }) {
+                            Text("\u{1F3C6}")  // Unicode Trophy
+                                .font(.headline)
+                                .frame(maxWidth: geometry.size.width * 0.12, maxHeight: geometry.size.height * 0.06)
+                                .background(Color.black.opacity(0.2))
+                                .clipShape(RoundedRectangle(cornerRadius: 5))
+                                .padding(.trailing, 12)
+                        }
                     }
                 }
-            }
-            .frame(height: geometry.size.height * 0.06)
-            
-
-            //History
-            VStack {
-                HStack{
-                    let symbols = history.map { $0.correct ? "checkmark.circle.fill" : "xmark.circle.fill" }
-                    let maxSymbols = 20
-                    let filledSymbols = Array(symbols.suffix(maxSymbols))
-                    let paddedSymbols = filledSymbols + Array(repeating: "questionmark.circle.fill", count: maxSymbols - filledSymbols.count)
-                    // Show pass/fail for latest 20 problems attempted
-                    VStack(spacing: 4) {
-                        ForEach(0..<2, id: \.self) { row in
-                            HStack(spacing: 4) {
-                                ForEach(0..<10, id: \.self) { col in
-                                    let index = row * 10 + col
-                                    Image(systemName: paddedSymbols[index])
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 16, height: 16)
-                                        .foregroundColor(
-                                            paddedSymbols[index] == "checkmark.circle.fill" ? .green :
-                                                paddedSymbols[index] == "xmark.circle.fill" ? .red.opacity(0.85) : .white.opacity(0.85)
-                                        )
-                                }.animation(.easeInOut, value: history.count)
+                .frame(height: geometry.size.height * 0.06)
+                
+                
+                //History
+                VStack {
+                    HStack{
+                        let symbols = history.map { $0.correct ? "checkmark.circle.fill" : "xmark.circle.fill" }
+                        let maxSymbols = 20
+                        let filledSymbols = Array(symbols.suffix(maxSymbols))
+                        let paddedSymbols = filledSymbols + Array(repeating: "questionmark.circle.fill", count: maxSymbols - filledSymbols.count)
+                        // Show pass/fail for latest 20 problems attempted
+                        VStack(spacing: 4) {
+                            ForEach(0..<2, id: \.self) { row in
+                                HStack(spacing: 4) {
+                                    ForEach(0..<10, id: \.self) { col in
+                                        let index = row * 10 + col
+                                        Image(systemName: paddedSymbols[index])
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 16, height: 16)
+                                            .foregroundColor(
+                                                paddedSymbols[index] == "checkmark.circle.fill" ? .green :
+                                                    paddedSymbols[index] == "xmark.circle.fill" ? .red.opacity(0.85) : .white.opacity(0.85)
+                                            )
+                                    }.animation(.easeInOut, value: history.count)
+                                }
                             }
                         }
-                    }
-                    Button(action: {
-                        showHighScoreDetail = true
-                    }) {
-                        Text(scoreSymbols)
-                            .frame(width: geometry.size.height * 0.16, height: geometry.size.height * 0.08)
-                            .font(.title3)
-                            .padding(.vertical, 2)
-                            .background(Color.white.opacity(0.4))
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                    }
-                    .sheet(isPresented: $showHighScoreDetail) {
-                        if #available(iOS 16.0, *) {
-                            HighScoreDetailView(
-                                difficulty: Int(difficulty),
-                                op: selectedOperator,
-                                highScores: highScores
-                            )
-                            .presentationDetents([.medium])
-                            .presentationDragIndicator(.visible)
-                        } else {
-                            // Fallback for iOS <16: full-screen sheet
-                            HighScoreDetailView(
-                                difficulty: Int(difficulty),
-                                op: selectedOperator,
-                                highScores: highScores
-                            )
+                        Button(action: {
+                            showHighScoreDetail = true
+                        }) {
+                            Text(scoreSymbols)
+                                .frame(width: geometry.size.height * 0.16, height: geometry.size.height * 0.08)
+                                .font(.title3)
+                                .padding(.vertical, 2)
+                                .background(Color.white.opacity(0.4))
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
                         }
+                        .sheet(isPresented: $showHighScoreDetail) {
+                            if #available(iOS 16.0, *) {
+                                HighScoreDetailView(
+                                    difficulty: Int(difficulty),
+                                    op: selectedOperator,
+                                    highScores: highScores
+                                )
+                                .presentationDetents([.medium])
+                                .presentationDragIndicator(.visible)
+                            } else {
+                                // Fallback for iOS <16: full-screen sheet
+                                HighScoreDetailView(
+                                    difficulty: Int(difficulty),
+                                    op: selectedOperator,
+                                    highScores: highScores
+                                )
+                            }
+                        }
+                        
                     }
+                    // Show last problem wil pass/fail mark and correct solution
+                    // Show incorrect answer as well?
                     
-                }
-                // Show last problem wil pass/fail mark and correct solution
-                // Show incorrect answer as well?
-                
-                HStack {
-                    if let last = history.last {
-                        let isCorrect = last.correct
-                        let symbolColor = isCorrect ? Color.green.opacity(0.85) : Color.red.opacity(0.85)
-                        let iconName = isCorrect ? "checkmark.circle.fill" : "xmark.circle.fill"
-
-                        Image(systemName: iconName)
-                            .resizable()
-                            .frame(width: 22, height: 22)
-                            .foregroundColor(symbolColor)
-                        if isCorrect {  // Passed last problem
-                            Text("\(last.problem.num1) \(last.problem.symbol) \(last.problem.num2) = \(last.problem.answer)")
-                                .frame(maxWidth: .infinity, minHeight: 25, alignment: .leading)
-                                .padding(.leading, 10)
-                                .background(Color.black.opacity(0.8))
-                                .foregroundColor(.white)
-                                .clipShape(Capsule())
-                        } else {  // Failed last problem
-                            Text("\(last.problem.num1) \(last.problem.symbol) \(last.problem.num2) = \(last.problem.answer) \u{2260} \(last.guess)")
+                    HStack {
+                        if let last = history.last {
+                            let isCorrect = last.correct
+                            let symbolColor = isCorrect ? Color.green.opacity(0.85) : Color.red.opacity(0.85)
+                            let iconName = isCorrect ? "checkmark.circle.fill" : "xmark.circle.fill"
+                            
+                            Image(systemName: iconName)
+                                .resizable()
+                                .frame(width: 22, height: 22)
+                                .foregroundColor(symbolColor)
+                            if isCorrect {  // Passed last problem
+                                Text("\(last.problem.num1) \(last.problem.symbol) \(last.problem.num2) = \(last.problem.answer)")
+                                    .frame(maxWidth: .infinity, minHeight: 25, alignment: .leading)
+                                    .padding(.leading, 10)
+                                    .background(Color.black.opacity(0.8))
+                                    .foregroundColor(.white)
+                                    .clipShape(Capsule())
+                            } else {  // Failed last problem
+                                Text("\(last.problem.num1) \(last.problem.symbol) \(last.problem.num2) = \(last.problem.answer) \u{2260} \(last.guess)")
+                                    .frame(maxWidth: .infinity, minHeight: 25, alignment: .leading)
+                                    .padding(.leading, 10)
+                                    .background(Color.black.opacity(0.8))
+                                    .foregroundColor(.white)
+                                    .clipShape(Capsule())
+                            }
+                        } else {  // history.last does not exist
+                            Image(systemName: "questionmark.circle.fill")
+                                .resizable()
+                                .frame(width: 22, height: 22)
+                                .foregroundColor(.white.opacity(0.85))
+                            
+                            Text("")
                                 .frame(maxWidth: .infinity, minHeight: 25, alignment: .leading)
                                 .padding(.leading, 10)
                                 .background(Color.black.opacity(0.8))
                                 .foregroundColor(.white)
                                 .clipShape(Capsule())
                         }
-                    } else {  // history.last does not exist
-                        Image(systemName: "questionmark.circle.fill")
-                            .resizable()
-                            .frame(width: 22, height: 22)
-                            .foregroundColor(.white.opacity(0.85))
-
-                        Text("")
-                            .frame(maxWidth: .infinity, minHeight: 25, alignment: .leading)
-                            .padding(.leading, 10)
-                            .background(Color.black.opacity(0.8))
-                            .foregroundColor(.white)
-                            .clipShape(Capsule())
                     }
+                    .frame(maxWidth: .infinity)
+                    //                .background(Color.orange.opacity(0.2))  // Debugging UI
                 }
-                .frame(maxWidth: .infinity)
-//                .background(Color.orange.opacity(0.2))  // Debugging UI
-            }
-            .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.17)  // Size of history box
-//            .background(Color.orange.opacity(0.2))  // Debugging UI
-            .padding(3)  // PADDING!!!
-            .background(Color.black.opacity(0.3))
-            .clipShape(RoundedRectangle(cornerRadius: 10))
-
-            
-            // Problem Display - Display current problem and input for answer
-            VStack {
-                Text("\(currentProblem.num1) \(currentProblem.symbol) \(currentProblem.num2) =")
-                    .font(.largeTitle)
-                    .padding(4)
-                    .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.10)
-                    .background(Color.black.opacity(0.8))
-                    .foregroundColor(.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
-            
-                HStack(spacing: 10) {
-                    Text(userInput.isEmpty ? "?" : userInput)
-                        .font(.title)
-                        .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.05)
-//                        .padding()
+                .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.17)  // Size of history box
+                //            .background(Color.orange.opacity(0.2))  // Debugging UI
+                .padding(3)  // PADDING!!!
+                .background(Color.black.opacity(0.3))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                
+                
+                // Problem Display - Display current problem and input for answer
+                VStack {
+                    Text("\(currentProblem.num1) \(currentProblem.symbol) \(currentProblem.num2) =")
+                        .font(.largeTitle)
+                        .padding(4)
+                        .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.10)
                         .background(Color.black.opacity(0.8))
                         .foregroundColor(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                    Button(action: {
-                        userInput = String(userInput.dropLast())
-                    }) {
-                        Text("\u{232B}") // Unicode symbol for backspace (U+232B)
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                    
+                    HStack(spacing: 10) {
+                        Text(userInput.isEmpty ? "?" : userInput)
                             .font(.title)
-                            .frame(maxWidth: geometry.size.width * 0.15, maxHeight: geometry.size.height * 0.05)
+                            .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.05)
+                        //                        .padding()
                             .background(Color.black.opacity(0.8))
                             .foregroundColor(.white)
                             .clipShape(RoundedRectangle(cornerRadius: 12))
-                    }
-                }
-            }
-            .padding(.horizontal)
-            .frame(height: geometry.size.height * 0.15)
-
-            // Numpad
-            VStack(spacing: 3) {
-                ForEach([[7,8,9],[4,5,6],[1,2,3]], id: \.self) { row in
-                    HStack(spacing: 10) {
-                        ForEach(row, id: \.self) { num in
-                            numButton(String(num), geometry: geometry)
+                        Button(action: {
+                            userInput = String(userInput.dropLast())
+                        }) {
+                            Text("\u{232B}") // Unicode symbol for backspace (U+232B)
+                                .font(.title)
+                                .frame(maxWidth: geometry.size.width * 0.15, maxHeight: geometry.size.height * 0.05)
+                                .background(Color.black.opacity(0.8))
+                                .foregroundColor(.white)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
                         }
                     }
                 }
+                .padding(.horizontal)
+                .frame(height: geometry.size.height * 0.15)
                 
-                HStack(spacing: 10) {
-                    numButton("-", geometry: geometry)
-                    numButton("0", geometry: geometry)
-                    
-                    Button(action: {
-                        submitAnswer()
-                    }) {
-                        Text("\u{23CE}")  // Unicode "Enter"/"Carrige return"
-                            .font(.title2)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .foregroundColor(.black)
-                            .background(Color.white.opacity(0.4))
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                // Numpad
+                VStack(spacing: 3) {
+                    ForEach([[7,8,9],[4,5,6],[1,2,3]], id: \.self) { row in
+                        HStack(spacing: 10) {
+                            ForEach(row, id: \.self) { num in
+                                numButton(String(num), geometry: geometry)
+                            }
+                        }
                     }
-                    // Same size as numpad buttons, see func numButton
-                    .frame(width: geometry.size.width * 0.25, height: geometry.size.height * 0.08)
-                    .contentShape(Rectangle()) // Makes entire button tappable
+                    
+                    HStack(spacing: 10) {
+                        numButton("-", geometry: geometry)
+                        numButton("0", geometry: geometry)
+                        
+                        Button(action: {
+                            submitAnswer()
+                        }) {
+                            Text("\u{23CE}")  // Unicode "Enter"/"Carrige return"
+                                .font(.title2)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                .foregroundColor(.black)
+                                .background(Color.white.opacity(0.4))
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                        }
+                        // Same size as numpad buttons, see func numButton
+                        .frame(width: geometry.size.width * 0.25, height: geometry.size.height * 0.08)
+                        .contentShape(Rectangle()) // Makes entire button tappable
+                    }
                 }
-            }
-            .padding()
-            .background(Color.orange)
-            .frame(height: geometry.size.height * 0.36)
-            .clipShape(RoundedRectangle(cornerRadius: 15))
-            
-            // Difficulty Slider
-            HStack {
-                Slider(value: $difficulty, in: ContentView.minDifficulty...ContentView.maxDifficulty, step: 1)
-                    .accentColor(.green)
-                    .frame(height: geometry.size.height * 0.04) // shorter height
-                // Show different colors to give an idea about difficulty
-                Text("\(Int(difficulty))")
-                    .font(.caption)
-                    .frame(minWidth: geometry.size.width * 0.05)
-                    .padding(6)
-                    .background(ContentView.difficultyColor(for : difficulty))
-                    .animation(.easeInOut(duration: 0.3), value: difficulty)
-//                    .background(Color.white) // booring!
-                    .cornerRadius(10)
-                    .overlay(
+                .padding()
+                .background(Color.orange)
+                .frame(height: geometry.size.height * 0.36)
+                .clipShape(RoundedRectangle(cornerRadius: 15))
+                
+                // Difficulty Slider
+                HStack {
+                    Slider(value: $difficulty, in: ContentView.minDifficulty...ContentView.maxDifficulty, step: 1)
+                        .accentColor(.green)
+                        .frame(height: geometry.size.height * 0.04) // shorter height
+                    // Show different colors to give an idea about difficulty
+                    Text("\(Int(difficulty))")
+                        .font(.caption)
+                        .frame(minWidth: geometry.size.width * 0.05)
+                        .padding(6)
+                        .background(ContentView.difficultyColor(for : difficulty))
+                        .animation(.easeInOut(duration: 0.3), value: difficulty)
+                        .cornerRadius(10)
+                        .overlay(
                             RoundedRectangle(cornerRadius: 10)
                                 .stroke(Color.white, lineWidth: 2)
-                        )            }
-            .padding(.horizontal)
-            .frame(height: geometry.size.height * 0.03)
-
-            
-            // Operator Selection
-            HStack {
-                ForEach(Operator.allCases, id: \.self) { op in
-                    Button(action: {
-                        highScores.updateIfHigher(streak: currentStreak, difficulty: Int(difficulty), op: selectedOperator)
-                        currentStreak = 0
-                        selectedOperator = op
-                        newProblem()
-                        history.removeAll()
-                    }) {
-                        Text("\(op.rawValue)")
-                        
-                            .frame(width: geometry.size.width * 0.22, height: geometry.size.height * 0.08)
-                            .font(.title)
-                            .background(op == selectedOperator ? Color.white.opacity(0.4) : Color.black.opacity(0.4))
-                            .foregroundColor(op == selectedOperator ? Color.black : Color.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                        )
+                }
+                .padding(.horizontal)
+                .frame(height: geometry.size.height * 0.03)
+                
+                
+                // Operator Selection
+                HStack {
+                    ForEach(Operator.allCases, id: \.self) { op in
+                        Button(action: {
+                            highScores.updateIfHigher(streak: currentStreak, difficulty: Int(difficulty), op: selectedOperator)
+                            currentStreak = 0
+                            selectedOperator = op
+                            newProblem()
+                            history.removeAll()
+                        }) {
+                            Text("\(op.rawValue)")
+                            
+                                .frame(width: geometry.size.width * 0.22, height: geometry.size.height * 0.08)
+                                .font(.title)
+                                .background(op == selectedOperator ? Color.white.opacity(0.4) : Color.black.opacity(0.4))
+                                .foregroundColor(op == selectedOperator ? Color.black : Color.white)
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                        }
                     }
                 }
+                .frame(height: geometry.size.height * 0.12)
             }
-            .frame(height: geometry.size.height * 0.12)
-        }
-        .frame(width: geometry.size.width, height: geometry.size.height)
-        .background(Color.blue)
-        .onAppear {
-            newProblem()
-        }
-        .onChange(of: difficulty) { _ in
-            highScores.updateIfHigher(streak: currentStreak, difficulty: Int(difficulty), op: selectedOperator)
-            currentStreak = 0
-            newProblem()
-            history.removeAll()
-        }
-        .sheet(isPresented: $showHighScores) {
-            HighScoresView(highScores: highScores)
+            .frame(width: geometry.size.width, height: geometry.size.height)
+            .background(Color.blue)
+            .onAppear {
+                newProblem()
+            }
+            .onChange(of: difficulty) { _ in
+                highScores.updateIfHigher(streak: currentStreak, difficulty: Int(difficulty), op: selectedOperator)
+                currentStreak = 0
+                newProblem()
+                history.removeAll()
+            }
+            .sheet(isPresented: $showHighScores) {
+                HighScoresView(highScores: highScores)
+            }
         }
     }
-}
     
     // MARK: - Helpers
-
+    
     var scoreSymbols: String {
         let score = highScores.highScore(for: Int(difficulty), op: selectedOperator)
         return HighScoresView.trophyText(for: score)
     }
-
+    
     func numButton(_ label: String, geometry: GeometryProxy) -> some View {
         Button(action: {
             userInput += label
@@ -316,28 +316,28 @@ var body: some View {
         history.append((currentProblem, correct, guess))
         
         if correct {
-                currentStreak += 1
-            } else {
-                currentStreak = 0
-            }
+            currentStreak += 1
+        } else {
+            currentStreak = 0
+        }
         highScores.updateIfHigher(streak: currentStreak, difficulty: Int(difficulty), op: selectedOperator)
         userInput = ""
         newProblem()
     }
-
+    
     func newProblem() {
         currentProblem = generateProblem(difficulty: difficulty, op: selectedOperator)
         userInput = ""
     }
-
+    
     func scorePercentage() -> Int {
         guard !history.isEmpty else { return 0 }
         let correct = history.filter { $0.correct }.count
         return Int((Double(correct) / Double(history.count)) * 100)
     }
     
-
-
+    
+    
     static func difficultySaturation(for difficulty: Double) -> Double {
         return Double((difficulty - minDifficulty) / (maxDifficulty - minDifficulty))
     }
