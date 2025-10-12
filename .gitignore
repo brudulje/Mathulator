@@ -2,8 +2,11 @@
 # Xcode
 build/
 */Assets.xcassets/AppIcon.appiconset/*
+
 logo/*
 !logo/AppIcon1024.png
+screenshots/*
+AppStoreInfoMathulator.txt
 
 # Xcode workspace and user settings
 *.xcworkspace/xcuserdata/
