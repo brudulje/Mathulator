@@ -337,13 +337,8 @@ struct ContentView: View {
         return Int((Double(correct) / Double(history.count)) * 100)
     }
     
-    
-    
-    static func difficultySaturation(for difficulty: Double) -> Double {
-        return Double((difficulty - minDifficulty) / (maxDifficulty - minDifficulty))
-    }
     static func difficultyColor(for difficulty: Double) -> Color {
-        let saturation = difficultySaturation(for: difficulty)
+        let saturation = Double((difficulty - minDifficulty) / (maxDifficulty - minDifficulty))
         return Color(hue: 0.1, saturation: saturation, brightness: 0.94)
     }
     
