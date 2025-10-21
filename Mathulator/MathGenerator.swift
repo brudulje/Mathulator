@@ -33,7 +33,7 @@ func generateProblem(difficulty: Double, op: Operator) -> MathProblem {
     let x: Int
     let y: Int
     let answer: Int
-
+    
     switch op {
     case .mult:
         x = Int.random(in: lower...upper)
@@ -54,6 +54,6 @@ func generateProblem(difficulty: Double, op: Operator) -> MathProblem {
         x = quotient * y
         answer = quotient
     }
-
+    
     return MathProblem(num1: x, num2: y, answer: answer, symbol: op.rawValue)
 }

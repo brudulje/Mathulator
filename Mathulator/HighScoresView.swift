@@ -28,14 +28,14 @@ struct HighScoresView: View {
                             Text(op.rawValue)
                                 .frame(width: geometry.size.width * 0.16, height: geometry.size.height * 0.06, alignment: .center)
                                 .font(.title2)
-//                                    .padding(1)
+                            //                                    .padding(1)
                                 .foregroundColor(Color.white)
                                 .background(
-                                        ZStack {
-                                            Color.blue
-                                            Color.black.opacity(0.3)
-                                        }
-                                    )//.background(Color.blue.opacity(0.8))
+                                    ZStack {
+                                        Color.blue
+                                        Color.black.opacity(0.3)
+                                    }
+                                )//.background(Color.blue.opacity(0.8))
                                 .clipShape(RoundedRectangle(cornerRadius: 5))
                         }
                     }
@@ -67,14 +67,7 @@ struct HighScoresView: View {
                                                 .padding(4)
                                                 .background(HighScoresView.highScoreBackgroundColor(for: score))
                                                 .clipShape(RoundedRectangle(cornerRadius: 5))
-                                              }
-//                                        Text("\(symbols)")
-//                                            .frame(width: geometry.size.width * 0.15)  // 4 operators × 0.18 = ~0.72 + 0.15 = ~0.87
-//                                            .font(.caption)
-//                                            .padding(4)
-//                                            // Custom colors for various score levels
-//                                            .background(HighScoresView.highScoreBackgroundColor(for: score))
-//                                            .clipShape(RoundedRectangle(cornerRadius: 5))
+                                        }
                                     }
                                 }
                             }
@@ -119,7 +112,7 @@ struct HighScoresView: View {
             return "\(score)"
         }
     }
-
+    
     static func highScoreBackgroundColor(for score: Int) -> Color {
         switch score {
         case 0:

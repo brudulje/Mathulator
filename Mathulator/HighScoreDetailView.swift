@@ -38,7 +38,7 @@ struct HighScoreDetailView: View {
                     Text("\(difficulty)")
                         .frame(width: geometry.size.width * 0.21, height: geometry.size.width * 0.13, alignment: .center)
                         .font(.title2)
-//                        .padding(4)
+                    //                        .padding(4)
                         .foregroundColor(Color.black)
                         .background(ContentView.difficultyColor(for: Double(difficulty)))
                         .clipShape(RoundedRectangle(cornerRadius: 5))
@@ -50,7 +50,7 @@ struct HighScoreDetailView: View {
                     
                     Text("Streak:").font(.title3)
                     Text("\(score)").font(.title3)
-
+                    
                     Text("Trophies:").font(.title3)
                     Text(symbols)
                         .frame(width: geometry.size.width * 0.26, height: geometry.size.width * 0.13)
@@ -59,11 +59,11 @@ struct HighScoreDetailView: View {
                         .background(HighScoresView.highScoreBackgroundColor(for: score))
                         .clipShape(RoundedRectangle(cornerRadius: 5))
                 }
-//                Text("Operator: \(op.rawValue)")
+                //                Text("Operator: \(op.rawValue)")
                 
-//                let score = highScores.highScore(for: difficulty, op: op)
-//                Text("Current Streak: \(score)")
-//                    .font(.largeTitle)
+                //                let score = highScores.highScore(for: difficulty, op: op)
+                //                Text("Current Streak: \(score)")
+                //                    .font(.largeTitle)
                 
                 Button(role: .destructive) {
                     highScores.reset(difficulty: difficulty, op: op)
