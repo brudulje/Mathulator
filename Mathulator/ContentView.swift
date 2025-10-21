@@ -260,7 +260,6 @@ struct ContentView: View {
                             history.removeAll()
                         }) {
                             Text("\(op.rawValue)")
-                            
                                 .frame(width: geometry.size.width * 0.22, height: geometry.size.height * 0.08)
                                 .font(.title)
                                 .background(op == selectedOperator ? Color.white.opacity(0.4) : Color.black.opacity(0.4))
@@ -277,7 +276,9 @@ struct ContentView: View {
                 newProblem()
             }
             .onChange(of: difficulty) { _ in
-                highScores.updateIfHigher(streak: currentStreak, difficulty: Int(difficulty), op: selectedOperator)
+                // Don't run updateIfHigher here; that will give the old difficulty's streak to the new difficulty,
+                // possibly setting the max streak of the new difficulty too high.
+//                highScores.updateIfHigher(streak: currentStreak, difficulty: Int(difficulty), op: selectedOperator)
                 currentStreak = 0
                 newProblem()
                 history.removeAll()
