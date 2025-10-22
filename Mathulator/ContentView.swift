@@ -22,14 +22,16 @@ struct ContentView: View {
     static let minDifficulty = DifficultyConfig.minDifficulty
     static let maxDifficulty = DifficultyConfig.maxDifficulty
     
+    
     var body: some View {
         GeometryReader { geometry in
+            let screenDiagonal = sqrt(geometry.size.width * geometry.size.width + geometry.size.height * geometry.size.height)
             VStack(spacing: 9) {
                 // Top Row: Logo and High score
                 ZStack {
                     // Logo
                     Text("Mathulator")
-                        .font(.headline)
+                        .responsiveFont(.headline)
                         .padding(3)
                         .background(Color.black.opacity(0.2))
                         .foregroundColor(.white)
@@ -42,7 +44,7 @@ struct ContentView: View {
                             showHighScores = true
                         }) {
                             Text("\u{1F3C6}")  // Unicode Trophy
-                                .font(.headline)
+                                .responsiveFont(.headline)
                                 .frame(maxWidth: geometry.size.width * 0.12, maxHeight: geometry.size.height * 0.06)
                                 .background(Color.black.opacity(0.2))
                                 .clipShape(RoundedRectangle(cornerRadius: 5))
@@ -57,19 +59,19 @@ struct ContentView: View {
                 VStack {
                     HStack{
                         let symbols = history.map { $0.correct ? "checkmark.circle.fill" : "xmark.circle.fill" }
-                        let maxSymbols = 20
+                        let maxSymbols = 21
                         let filledSymbols = Array(symbols.suffix(maxSymbols))
                         let paddedSymbols = filledSymbols + Array(repeating: "questionmark.circle.fill", count: maxSymbols - filledSymbols.count)
                         // Show pass/fail for latest 20 problems attempted
                         VStack(spacing: 4) {
-                            ForEach(0..<2, id: \.self) { row in
+                            ForEach(0..<3, id: \.self) { row in
                                 HStack(spacing: 4) {
-                                    ForEach(0..<10, id: \.self) { col in
-                                        let index = row * 10 + col
+                                    ForEach(0..<7, id: \.self) { col in
+                                        let index = row * 7 + col
                                         Image(systemName: paddedSymbols[index])
                                             .resizable()
                                             .scaledToFit()
-                                            .frame(width: 16, height: 16)
+                                            .frame(width: screenDiagonal * 0.022, height: screenDiagonal * 0.022)
                                             .foregroundColor(
                                                 paddedSymbols[index] == "checkmark.circle.fill" ? .green :
                                                     paddedSymbols[index] == "xmark.circle.fill" ? .red.opacity(0.85) : .white.opacity(0.85)
@@ -83,7 +85,7 @@ struct ContentView: View {
                         }) {
                             Text(scoreSymbols)
                                 .frame(width: geometry.size.height * 0.16, height: geometry.size.height * 0.08)
-                                .font(.title3)
+                                .responsiveFont(.title3)
                                 .padding(.vertical, 2)
                                 .background(Color.white.opacity(0.4))
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -95,7 +97,7 @@ struct ContentView: View {
                                     op: selectedOperator,
                                     highScores: highScores
                                 )
-                                .presentationDetents([.medium])
+                                .presentationDetents(UIDevice.current.userInterfaceIdiom == .pad ? [.large] :[.medium])
                                 .presentationDragIndicator(.visible)
                             } else {
                                 // Fallback for iOS <16: full-screen sheet
@@ -108,22 +110,23 @@ struct ContentView: View {
                         }
                         
                     }
-                    // Show last problem wil pass/fail mark and correct solution
+                    // Show last problem with pass/fail mark and correct solution
                     // Show incorrect answer as well?
                     
                     HStack {
-                        if let last = history.last {
+                        if let last = history.last {  // A problem was attemped
                             let isCorrect = last.correct
                             let symbolColor = isCorrect ? Color.green.opacity(0.85) : Color.red.opacity(0.85)
                             let iconName = isCorrect ? "checkmark.circle.fill" : "xmark.circle.fill"
                             
                             Image(systemName: iconName)
                                 .resizable()
-                                .frame(width: 22, height: 22)
+                                .frame(width: screenDiagonal * 0.035, height: screenDiagonal * 0.035)
                                 .foregroundColor(symbolColor)
                             if isCorrect {  // Passed last problem
                                 Text("\(last.problem.num1) \(last.problem.symbol) \(last.problem.num2) = \(last.problem.answer)")
                                     .frame(maxWidth: .infinity, minHeight: 25, alignment: .leading)
+                                    .responsiveFont(.subheadline)
                                     .padding(.leading, 10)
                                     .background(Color.black.opacity(0.8))
                                     .foregroundColor(.white)
@@ -131,27 +134,29 @@ struct ContentView: View {
                             } else {  // Failed last problem
                                 Text("\(last.problem.num1) \(last.problem.symbol) \(last.problem.num2) = \(last.problem.answer) \u{2260} \(last.guess)")
                                     .frame(maxWidth: .infinity, minHeight: 25, alignment: .leading)
+                                    .responsiveFont(.subheadline)
                                     .padding(.leading, 10)
                                     .background(Color.black.opacity(0.8))
                                     .foregroundColor(.white)
                                     .clipShape(Capsule())
                             }
-                        } else {  // history.last does not exist
+                        } else {  // history.last does not exist; no problem has been attempted yet
                             Image(systemName: "questionmark.circle.fill")
                                 .resizable()
-                                .frame(width: 22, height: 22)
+                                .frame(width: screenDiagonal * 0.035, height: screenDiagonal * 0.035)
                                 .foregroundColor(.white.opacity(0.85))
                             
-                            Text("")
+                            Text(" ")
                                 .frame(maxWidth: .infinity, minHeight: 25, alignment: .leading)
+                                .responsiveFont(.subheadline)
                                 .padding(.leading, 10)
                                 .background(Color.black.opacity(0.8))
                                 .foregroundColor(.white)
                                 .clipShape(Capsule())
                         }
                     }
-                    .frame(maxWidth: .infinity)
-                    //                .background(Color.orange.opacity(0.2))  // Debugging UI
+                    .frame(maxWidth: geometry.size.width * 0.9)
+//                    .background(Color.green.opacity(0.5))  // Debugging UI
                 }
                 .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.17)  // Size of history box
                 //            .background(Color.orange.opacity(0.2))  // Debugging UI
@@ -163,7 +168,7 @@ struct ContentView: View {
                 // Problem Display - Display current problem and input for answer
                 VStack {
                     Text("\(currentProblem.num1) \(currentProblem.symbol) \(currentProblem.num2) =")
-                        .font(.largeTitle)
+                        .responsiveFont(.largeTitle)
                         .padding(4)
                         .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.10)
                         .background(Color.black.opacity(0.8))
@@ -172,7 +177,7 @@ struct ContentView: View {
                     
                     HStack(spacing: 10) {
                         Text(userInput.isEmpty ? "?" : userInput)
-                            .font(.title)
+                            .responsiveFont(.title)
                             .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.05)
                         //                        .padding()
                             .background(Color.black.opacity(0.8))
@@ -182,7 +187,7 @@ struct ContentView: View {
                             userInput = String(userInput.dropLast())
                         }) {
                             Text("\u{232B}") // Unicode symbol for backspace (U+232B)
-                                .font(.title)
+                                .responsiveFont(.title)
                                 .frame(maxWidth: geometry.size.width * 0.15, maxHeight: geometry.size.height * 0.05)
                                 .background(Color.black.opacity(0.8))
                                 .foregroundColor(.white)
@@ -211,7 +216,7 @@ struct ContentView: View {
                             submitAnswer()
                         }) {
                             Text("\u{23CE}")  // Unicode "Enter"/"Carrige return"
-                                .font(.title2)
+                                .responsiveFont(.title2)
                                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 .foregroundColor(.black)
                                 .background(Color.white.opacity(0.4))
@@ -231,10 +236,10 @@ struct ContentView: View {
                 HStack {
                     Slider(value: $difficulty, in: ContentView.minDifficulty...ContentView.maxDifficulty, step: 1)
                         .accentColor(.green)
-                        .frame(height: geometry.size.height * 0.04) // shorter height
+                        .frame(height: geometry.size.height * 0.05) // shorter height
                     // Show different colors to give an idea about difficulty
-                    Text("\(Int(difficulty))")
-                        .font(.caption)
+                    Text("\(Int(difficulty))")  // Box at the right displaying difficulty
+                        .responsiveFont(.caption)
                         .frame(minWidth: geometry.size.width * 0.05)
                         .padding(6)
                         .background(ContentView.difficultyColor(for : difficulty))
@@ -261,7 +266,7 @@ struct ContentView: View {
                         }) {
                             Text("\(op.rawValue)")
                                 .frame(width: geometry.size.width * 0.22, height: geometry.size.height * 0.08)
-                                .font(.title)
+                                .responsiveFont(.title)
                                 .background(op == selectedOperator ? Color.white.opacity(0.4) : Color.black.opacity(0.4))
                                 .foregroundColor(op == selectedOperator ? Color.black : Color.white)
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -301,7 +306,7 @@ struct ContentView: View {
             userInput += label
         }) {
             Text(label)
-                .font(.title2)
+                .responsiveFont(.title2)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .foregroundColor(.white)
                 .background(Color.black.opacity(0.4))
