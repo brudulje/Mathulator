@@ -16,6 +16,7 @@ struct ContentView: View {
     @State private var showHighScores = false
     @State private var currentStreak = 0
     @State private var showHighScoreDetail = false
+    @State private var showAbout = false
     
     @StateObject private var highScores = HighScores()
     
@@ -31,7 +32,7 @@ struct ContentView: View {
                 ZStack {
                     // Logo
                     Text("Mathulator")
-                        .responsiveFont(.headline)
+                        .responsiveFont(.headline, weight: .bold)
                         .padding(3)
                         .background(Color.black.opacity(0.2))
                         .foregroundColor(.white)
@@ -40,19 +41,24 @@ struct ContentView: View {
                     HStack {
                         Spacer()
                         // High score
-                        Button(action: {
-                            showHighScores = true
-                        }) {
-                            Text("\u{1F3C6}")  // Unicode Trophy
-                                .responsiveFont(.headline)
-                                .frame(maxWidth: geometry.size.width * 0.12, maxHeight: geometry.size.height * 0.06)
+                        Menu {
+                            Button("\u{1F3C6} Trophies") { showHighScores = true }
+                            Divider()
+                            Button("\u{2139} About") { showAbout = true }
+                        } label: {
+                            Text("☰")
+                                .responsiveFont(.title)
+                                .frame(width: geometry.size.width * 0.12,
+                                       height: geometry.size.height * 0.06)
+                                .foregroundColor(Color.white)
                                 .background(Color.black.opacity(0.2))
                                 .clipShape(RoundedRectangle(cornerRadius: 5))
-                                .padding(.trailing, 12)
+                                .padding(.trailing, 6)
                         }
+                        
                     }
                 }
-                .frame(height: geometry.size.height * 0.06)
+                .frame(maxWidth: .infinity)//height: geometry.size.height * 0.06)
                 
                 
                 //History
@@ -290,6 +296,9 @@ struct ContentView: View {
             }
             .sheet(isPresented: $showHighScores) {
                 HighScoresView(highScores: highScores)
+            }
+            .sheet(isPresented: $showAbout) {
+                AboutView()
             }
         }
     }

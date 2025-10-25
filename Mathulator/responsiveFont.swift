@@ -6,9 +6,10 @@ extension View {
     func responsiveFont(
         _ textStyle: Font.TextStyle,
         baseWidth: CGFloat = 375,   // iPhone 8 width
-        baseHeight: CGFloat = 667   // iPhone 8 height
+        baseHeight: CGFloat = 667,   // iPhone 8 height
+        weight: Font.Weight = .regular
     ) -> some View {
-        modifier(ResponsiveFontModifier(textStyle: textStyle, baseWidth: baseWidth, baseHeight: baseHeight))
+        modifier(ResponsiveFontModifier(textStyle: textStyle, baseWidth: baseWidth, baseHeight: baseHeight, weight: weight))
     }
 }
 
@@ -17,6 +18,7 @@ private struct ResponsiveFontModifier: ViewModifier {
     let textStyle: Font.TextStyle
     let baseWidth: CGFloat
     let baseHeight: CGFloat
+    let weight: Font.Weight
     
 
     func body(content: Content) -> some View {
@@ -54,7 +56,7 @@ private struct ResponsiveFontModifier: ViewModifier {
         // Clamp to avoid absurdly large text on iPad + accessibility
         fontSize = min(fontSize, baseSize * 3.0)
 
-        return content.font(.system(size: fontSize))
+        return content.font(.system(size: fontSize).weight(weight))
     }
 }
 

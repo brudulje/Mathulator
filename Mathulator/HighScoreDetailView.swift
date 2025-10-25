@@ -10,16 +10,26 @@ struct HighScoreDetailView: View {
     let difficulty: Int
     let op: Operator
     @ObservedObject var highScores: HighScores
-    
+    @Environment(\.dismiss) var dismiss
+
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 20) {
-                HStack{
-                    Spacer()
-                    Text("\u{1F3C6}")
-                        .responsiveFont(.title)
-                    Spacer()
-                }
+                ZStack{
+                    HStack{
+                        Spacer()
+                        Text("\u{1F3C6}")
+                            .responsiveFont(.title)
+                        Spacer()
+                    }
+                    HStack{
+                        Spacer()
+                        Button("Close") {
+                            dismiss()
+                        }
+                    }
+                
+            }
                 HStack{
                     //                    Text("Operator:").responsiveFont(.title2)
                     Spacer()

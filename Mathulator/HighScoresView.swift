@@ -10,7 +10,8 @@ import SwiftUI
 struct HighScoresView: View {
     @ObservedObject var highScores: HighScores
     @State private var selectedDetail: ScoreDetail?
-    
+    @Environment(\.dismiss) var dismiss
+
     var body: some View {
         GeometryReader { geometry in
             NavigationView {
@@ -78,29 +79,35 @@ struct HighScoresView: View {
                         .padding()
                     }
                 }
-                .navigationTitle("\u{1F3C6}\u{1F3C6}\u{1F3C6}")  // "\u{1F3C6} High scores \u{1F3C6}"Unicode "Trophy"
+                .navigationTitle("\u{1F3C6}\u{1F3C6}\u{1F3C6}")
                 .navigationBarTitleDisplayMode(.inline)
-            }
-            .sheet(item: $selectedDetail) { detail in
-                if #available(iOS 16.0, *) {
-                    HighScoreDetailView(
-                        difficulty: detail.difficulty,
-                        op: detail.op,
-                        highScores: highScores
-                    )
-                    .presentationDetents(UIDevice.current.userInterfaceIdiom == .pad ? [.large] :[.medium])
-                    .presentationDragIndicator(.visible)
-                } else {
-                    HighScoreDetailView(
-                        difficulty: detail.difficulty,
-                        op: detail.op,
-                        highScores: highScores
-                    )
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button("Close") {
+                            dismiss()
+                        }
+                    }
+                }
+                .sheet(item: $selectedDetail) { detail in
+                    if #available(iOS 16.0, *) {
+                        HighScoreDetailView(
+                            difficulty: detail.difficulty,
+                            op: detail.op,
+                            highScores: highScores
+                        )
+                        .presentationDetents(UIDevice.current.userInterfaceIdiom == .pad ? [.large] :[.medium])
+                        .presentationDragIndicator(.visible)
+                    } else {
+                        HighScoreDetailView(
+                            difficulty: detail.difficulty,
+                            op: detail.op,
+                            highScores: highScores
+                        )
+                    }
                 }
             }
         }
     }
-    
     static func trophyText(for score: Int) -> String {
         switch score {
         case 0...4:
