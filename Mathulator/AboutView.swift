@@ -34,7 +34,7 @@ struct AboutView: View {
                         Text("Get trophies").font(.headline)
 //                            .responsiveFont(.headline, weight: .bold) // Gets too large on large screens
                             
-                        Text("The scoreboard will keep track of your maximum streak for each discipline and difficulty. Once you solve a problem and get a streak of 1, the background goes blue. Reaching streaks of 5, 12, or 20 will earn you a new trophy.")
+                        Text("The scoreboard will keep track of your maximum streak for each discipline and difficulty. Once you solve a problem and get a streak of 1, the background in the trophy overview goes blue. Reaching streaks of 5, 12, or 20 will earn you a new trophy.")
                             .multilineTextAlignment(.leading)
                         
                         Text("""
