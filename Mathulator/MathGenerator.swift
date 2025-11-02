@@ -5,7 +5,6 @@
 //  Created by Joachim Seland Graff on 2025-07-04.
 //
 
-
 import Foundation
 
 struct MathProblem {
@@ -23,6 +22,7 @@ enum Operator: String, CaseIterable {
 }
 
 func interval(for difficulty: Double) -> (Int, Int) {
+    /// Return interval based on difficulty for generateProblem to pick numbers from 
     let lower = max(1, Int(pow(10, difficulty / 10 - 0.5)))
     let upper = Int(pow(10, difficulty / 10))
     return (lower, upper)

@@ -11,7 +11,7 @@ struct HighScoresView: View {
     @ObservedObject var highScores: HighScores
     @State private var selectedDetail: ScoreDetail?
     @Environment(\.dismiss) var dismiss
-
+    
     var body: some View {
         GeometryReader { geometry in
             NavigationView {

@@ -5,12 +5,12 @@
 //  Created by Joachim Seland Graff on 2025-07-08.
 //
 
-
 import Foundation
 
 class HighScores: ObservableObject {
-    static let minDifficulty = ContentView.minDifficulty
-    static let maxDifficulty = ContentView.maxDifficulty
+    static let shared = HighScores()
+    static let minDifficulty = DifficultyConfig.minDifficulty
+    static let maxDifficulty = DifficultyConfig.maxDifficulty
     static let difficulties = Array(Int(minDifficulty)...Int(maxDifficulty))
     static let operatorCount = Operator.allCases.count
     

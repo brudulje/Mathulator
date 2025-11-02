@@ -4,6 +4,7 @@
 //
 //  Created by Joachim Seland Graff on 2025-08-31.
 //
+
 import SwiftUI
 
 struct HighScoreDetailView: View {
@@ -11,7 +12,7 @@ struct HighScoreDetailView: View {
     let op: Operator
     @ObservedObject var highScores: HighScores
     @Environment(\.dismiss) var dismiss
-
+    
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 20) {
@@ -28,8 +29,8 @@ struct HighScoreDetailView: View {
                             dismiss()
                         }
                     }
-                
-            }
+                    
+                }
                 HStack{
                     //                    Text("Operator:").responsiveFont(.title2)
                     Spacer()
@@ -57,7 +58,7 @@ struct HighScoreDetailView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 5))
                     Spacer()
                     Spacer()
-                    }
+                }
                 
                 HStack{
                     let score = highScores.highScore(for: difficulty, op: op)
@@ -70,20 +71,20 @@ struct HighScoreDetailView: View {
                         .padding(4)
                         .background(HighScoresView.highScoreBackgroundColor(for: score))
                         .clipShape(RoundedRectangle(cornerRadius: 5))
-                
-                //                Text("Operator: \(op.rawValue)")
-                
-                //                let score = highScores.highScore(for: difficulty, op: op)
-                //                Text("Current Streak: \(score)")
-                //                    .responsiveFont(.largeTitle)
+                    
+                    //                Text("Operator: \(op.rawValue)")
+                    
+                    //                let score = highScores.highScore(for: difficulty, op: op)
+                    //                Text("Current Streak: \(score)")
+                    //                    .responsiveFont(.largeTitle)
                 }
                 
                 HStack{
-                let score = highScores.highScore(for: difficulty, op: op)
+                    let score = highScores.highScore(for: difficulty, op: op)
                     
-                Text("Streak:").responsiveFont(.title3)
-                Text("\(score)").responsiveFont(.title3)
-            }
+                    Text("Streak:").responsiveFont(.title3)
+                    Text("\(score)").responsiveFont(.title3)
+                }
                 Button(role: .destructive) {
                     highScores.reset(difficulty: difficulty, op: op)
                 } label: {

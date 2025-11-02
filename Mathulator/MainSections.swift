@@ -9,14 +9,18 @@ import SwiftUI
 
 // MARK: - HeaderView
 
-struct HeaderView: View {
+struct HeaderView<TrailingContent: View>: View {
+    let title: String
+    let mode: GameMode
     @Binding var showHighScores: Bool
     @Binding var showAbout: Bool
-
+    @Binding var difficulty: Double
+    @ViewBuilder var trailingContent: () -> TrailingContent
+    
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                Text("Mathulator")
+                Text("\(title)")
                     .responsiveFont(.headline, weight: .bold)
                     .padding(3)
                     .background(Color.black.opacity(0.2))
@@ -25,20 +29,7 @@ struct HeaderView: View {
                 
                 HStack {
                     Spacer()
-                    Menu {
-                        Button("🏆 Trophies") { showHighScores = true }
-                        Divider()
-                        Button("ℹ About") { showAbout = true }
-                    } label: {
-                        Text("☰")
-                            .frame(width: geometry.size.width * 0.1,
-                                   height: geometry.size.width * 0.1)
-                            .responsiveFont(.title)
-                            .foregroundColor(Color.white)
-                            .background(Color.black.opacity(0.2))
-                            .clipShape(RoundedRectangle(cornerRadius: 5))
-                            .padding(.trailing, 6)
-                    }
+                    trailingContent()
                 }
             }
         }
@@ -50,11 +41,12 @@ struct HeaderView: View {
 
 struct HistoryView: View {
     let history: [(problem: MathProblem, correct: Bool, guess: Int)]
-    let screenDiagonal: CGFloat
-    @Binding var showHighScoreDetail: Bool
     let scoreSymbols: String
     let difficulty: Double
     let selectedOperator: Operator
+    let mode: GameMode
+    
+    @Binding var showHighScoreDetail: Bool
     @ObservedObject var highScores: HighScores
     
     var body: some View {
@@ -86,30 +78,39 @@ struct HistoryView: View {
                             }
                         }
                     }
-                    Button(action: { showHighScoreDetail = true }) {
-                        Text(scoreSymbols)
+                    if mode == .normal {
+                        Button(action: { showHighScoreDetail = true }) {
+                            Text(scoreSymbols)
+                                .frame(width: geometry.size.width * 0.3, height:  geometry.size.width * 0.12)
+                                .responsiveFont(.title3)
+                                .padding(.vertical, geometry.size.height * 0.05)
+                                .background(Color.white.opacity(0.4))
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                        }
+                        .sheet(isPresented: $showHighScoreDetail) {
+                            if #available(iOS 16.0, *) {
+                                HighScoreDetailView(
+                                    difficulty: Int(difficulty),
+                                    op: selectedOperator,
+                                    highScores: highScores
+                                )
+                                .presentationDetents(UIDevice.current.userInterfaceIdiom == .pad ? [.large] : [.medium])
+                                .presentationDragIndicator(.visible)
+                            } else {
+                                HighScoreDetailView(
+                                    difficulty: Int(difficulty),
+                                    op: selectedOperator,
+                                    highScores: highScores
+                                )
+                            }
+                        }
+                    } else if mode == .crescendo {
+                        Text("\(Int(difficulty))")
                             .frame(width: geometry.size.width * 0.3, height:  geometry.size.width * 0.12)
                             .responsiveFont(.title3)
                             .padding(.vertical, geometry.size.height * 0.05)
                             .background(Color.white.opacity(0.4))
                             .clipShape(RoundedRectangle(cornerRadius: 10))
-                    }
-                    .sheet(isPresented: $showHighScoreDetail) {
-                        if #available(iOS 16.0, *) {
-                            HighScoreDetailView(
-                                difficulty: Int(difficulty),
-                                op: selectedOperator,
-                                highScores: highScores
-                            )
-                            .presentationDetents(UIDevice.current.userInterfaceIdiom == .pad ? [.large] : [.medium])
-                            .presentationDragIndicator(.visible)
-                        } else {
-                            HighScoreDetailView(
-                                difficulty: Int(difficulty),
-                                op: selectedOperator,
-                                highScores: highScores
-                            )
-                        }
                     }
                 }
                 
@@ -124,7 +125,9 @@ struct HistoryView: View {
                             .frame(width: geometry.size.width * 0.06, height: geometry.size.width * 0.06)
                             .foregroundColor(symbolColor)
                         Text("\(last.problem.num1) \(last.problem.symbol) \(last.problem.num2) = \(last.problem.answer)\(isCorrect ? "" : " ≠ \(last.guess)")")
-                            .frame(width: geometry.size.width * 0.8)
+                            .frame(width: geometry.size.width * 0.85,
+                                   height: geometry.size.height * 0.2,
+                                   alignment: .leading)
                             .responsiveFont(.subheadline)
                             .padding(.leading, geometry.size.width * 0.02)
                             .background(Color.black.opacity(0.8))
@@ -136,10 +139,12 @@ struct HistoryView: View {
                             .frame(width: geometry.size.width * 0.06, height: geometry.size.width * 0.06)
                             .foregroundColor(.white.opacity(0.85))
                         Text(" ")
-                            .frame(width: geometry.size.width * 0.8)
+                            .frame(width: geometry.size.width * 0.8,
+                                   height: geometry.size.height * 0.2,
+                                   alignment: .leading)
                             .responsiveFont(.subheadline)
                             .padding(.leading, geometry.size.width * 0.02)
-                            .background(Color.black.opacity(0.8))
+                            .background(Color.black.opacity(0.85))
                             .foregroundColor(.white)
                             .clipShape(Capsule())
                     }
@@ -156,9 +161,9 @@ struct HistoryView: View {
 
 struct ProblemDisplayView: View {
     let problem: MathProblem
-    @Binding var userInput: String
     var onBackspace: () -> Void
-
+    @Binding var userInput: String
+    
     var body: some View {
         GeometryReader { geometry in
             VStack {
@@ -180,8 +185,8 @@ struct ProblemDisplayView: View {
                     Button(action: onBackspace) {
                         Text("⌫")
                             .frame(maxWidth: geometry.size.width * 0.20)
-//                        ,
-//                                   maxHeight: geometry.size.height * 0.05)
+                        //                        ,
+                        //                                   maxHeight: geometry.size.height * 0.05)
                             .responsiveFont(.title)
                             .background(Color.black.opacity(0.8))
                             .foregroundColor(.white)
@@ -199,40 +204,19 @@ struct ProblemDisplayView: View {
 struct NumpadView: View {
     var onTap: (String) -> Void
     var onEnter: () -> Void
-
+    
     var body: some View {
         VStack(spacing: 3) {
             ForEach([[7,8,9],[4,5,6],[1,2,3]], id: \.self) { row in
                 HStack(spacing: 10) {
                     ForEach(row, id: \.self) { num in
-                        Button(action: { onTap("\(num)") }) {
-                            Text("\(num)")
-                                .responsiveFont(.title2)
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                .foregroundColor(.white)
-                                .background(Color.black.opacity(0.4))
-                                .clipShape(RoundedRectangle(cornerRadius: 10))
-                        }
+                        numButton("\(num)")
                     }
                 }
             }
             HStack(spacing: 10) {
-                Button(action: { onTap("-") }) {
-                    Text("-")
-                        .responsiveFont(.title2)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .foregroundColor(.white)
-                        .background(Color.black.opacity(0.4))
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                }
-                Button(action: { onTap("0") }) {
-                    Text("0")
-                        .responsiveFont(.title2)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .foregroundColor(.white)
-                        .background(Color.black.opacity(0.4))
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                }
+                numButton("-")
+                numButton("0")
                 Button(action: onEnter) {
                     Text("⏎")
                         .responsiveFont(.title2)
@@ -245,16 +229,32 @@ struct NumpadView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.orange)
-//        .clipShape(RoundedRectangle(cornerRadius: 5))
+        //        .clipShape(RoundedRectangle(cornerRadius: 5))
     }
+    
+    func numButton(_ label: String) -> some View {
+        Button(action: {
+            onTap(label)
+        }) {
+            Text(label)
+                .responsiveFont(.title2)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .foregroundColor(.white)
+                .background(Color.black.opacity(0.4))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+        }
+        //            .frame(width: geometry.size.width * 0.25, height: geometry.size.height * 0.08)
+        .contentShape(Rectangle()) // ensures the full frame is tappable
+    }
+    
 }
 
 // MARK: - DifficultySliderView
 
 struct DifficultySliderView: View {
-    @Binding var difficulty: Double
     let minDifficulty: Double
     let maxDifficulty: Double
+    @Binding var difficulty: Double
     
     var body: some View {
         GeometryReader { geometry in
@@ -275,15 +275,42 @@ struct DifficultySliderView: View {
     }
 }
 
+// MARK: - DifficultyDisplayView
+
+struct DifficultyDisplayView: View {
+//    let minDifficulty: Double
+//    let maxDifficulty: Double
+    @Binding var difficulty: Double
+    
+    var body: some View {
+        GeometryReader { geometry in
+            HStack {
+                Text("Current difficulty")
+                    .foregroundColor(Color.white)
+                Text("\(Int(difficulty))")
+                    .frame(minWidth: geometry.size.width * 0.08, minHeight: geometry.size.width * 0.08)
+                    .responsiveFont(.subheadline)
+                    .padding(6)
+                    .background(ContentView.difficultyColor(for: difficulty))
+                    .animation(.easeInOut(duration: 0.3), value: difficulty)
+                    .cornerRadius(10)
+                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.white, lineWidth: 2))
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.black.opacity(0.6))
+            .cornerRadius(10)
+        }
+    }
+}
+
 // MARK: - OperatorSelectionView
 
 struct OperatorSelectionView: View {
     @Binding var selectedOperator: Operator
-    @Binding var currentStreak: Int
     @Binding var difficulty: Double
     @ObservedObject var highScores: HighScores
     var onOperatorChange: (Operator) -> Void
-
+    
     var body: some View {
         HStack (spacing: 0) {
             ForEach(Operator.allCases, id: \.self) { op in
@@ -295,7 +322,7 @@ struct OperatorSelectionView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .background(op == selectedOperator ? Color.white.opacity(0.4) : Color.black.opacity(0.4))
                         .foregroundColor(op == selectedOperator ? Color.black : Color.white)
-//                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                    //                        .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
             }
         }

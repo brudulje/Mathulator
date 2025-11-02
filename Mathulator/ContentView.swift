@@ -8,16 +8,17 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var currentProblem = generateProblem(difficulty: 11, op: .add)
-    @State private var userInput = ""
-    @State private var history: [(problem: MathProblem, correct: Bool, guess: Int)] = [] // true = correct, false = wrong
-    @State private var selectedOperator: Operator = .add
-    @State private var difficulty: Double = 11
-    @State private var showHighScores = false
-    @State private var currentStreak = 0
     @State private var showHighScoreDetail = false
     @State private var showAbout = false
+    @State private var presentingCrescendo = false
+    @State private var showHighScores = false
     
+    @StateObject private var session = GameSession(
+        mode: .normal,
+        startDifficulty: 11,
+        selectedOperator: .add,
+        highScores: HighScores.shared
+    )
     @StateObject private var highScores = HighScores()
     
     static let minDifficulty = DifficultyConfig.minDifficulty
@@ -26,69 +27,89 @@ struct ContentView: View {
     
     var body: some View {
         GeometryReader { geometry in
-            let screenDiagonal = sqrt(geometry.size.width * geometry.size.width + geometry.size.height * geometry.size.height)
             VStack(spacing: 7) {
                 // Header
-                HeaderView(showHighScores: $showHighScores, showAbout: $showAbout)
-                    .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.10)
-//                    .background(Color.green)  // debugging
-
+                HeaderView(title: "Mathulator",
+                           mode: .normal,
+                           showHighScores: $showHighScores,
+                           showAbout: $showAbout,
+                           difficulty: $session.difficulty,
+                ){
+                    Menu {
+                        Button("🏆 Trophies") { showHighScores = true }
+                        Button("\u{1F4C8} Crescendo Mode") {
+//                            session.enterCrescendo()   // sets session.mode + difficulty
+                            presentingCrescendo = true // triggers cover reliably
+                        }
+                        
+                        Divider()
+                        Button("ℹ About") { showAbout = true }
+                    } label: {
+                        Text("☰")
+                            .frame(width: geometry.size.width * 0.1,
+                                   height: geometry.size.width * 0.1)
+                            .responsiveFont(.title)
+                            .foregroundColor(Color.white)
+                            .background(Color.black.opacity(0.2))
+                            .clipShape(RoundedRectangle(cornerRadius: 5))
+                            .padding(.trailing, 6)
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.10)
+                //                    .background(Color.green)  // debugging
+                
                 // History
                 HistoryView(
-                    history: history,
-                    screenDiagonal: screenDiagonal,
-                    showHighScoreDetail: $showHighScoreDetail,
+                    history: session.history,
                     scoreSymbols: scoreSymbols,
-                    difficulty: difficulty,
-                    selectedOperator: selectedOperator,
-                    highScores: highScores
+                    difficulty: session.difficulty,
+                    selectedOperator: session.selectedOperator,
+                    mode: .normal,
+                    showHighScoreDetail: $showHighScoreDetail,
+                    highScores: highScores,
+                    
                 )
                 .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.18)
-//                .background(Color.red)  // debugging
+                //                .background(Color.red)  // debugging
                 .padding(3)
-
+                
                 // Problem display
                 ProblemDisplayView(
-                    problem: currentProblem,
-                    userInput: $userInput,
-                    onBackspace: { userInput = String(userInput.dropLast()) }
+                    problem: session.currentProblem,
+                    onBackspace: { session.userInput = String(session.userInput.dropLast()) },
+                    userInput: $session.userInput,
                 )
                 .padding(.horizontal)
                 .frame(height: geometry.size.height * 0.18)
-//                .background(Color.white)  // debugging
-
+                //                .background(Color.white)  // debugging
+                
                 // Numpad
                 NumpadView(
-                    onTap: { userInput += $0 },
-                    onEnter: submitAnswer
+                    onTap: { session.userInput += $0 },
+                    onEnter: session.submitAnswer
                 )
                 .padding()
                 .background(Color.orange)
                 .frame(width: geometry.size.width * 0.90,
                        height: geometry.size.height * 0.36)
                 .clipShape(RoundedRectangle(cornerRadius: 15))
-
+                
                 // Difficulty slider
                 DifficultySliderView(
-                    difficulty: $difficulty,
-                    minDifficulty: ContentView.minDifficulty,
-                    maxDifficulty: ContentView.maxDifficulty
+                    minDifficulty: DifficultyConfig.minDifficulty,
+                    maxDifficulty: DifficultyConfig.maxDifficulty,
+                    difficulty: $session.difficulty,
                 )
                 .padding(.horizontal)
                 .frame(height: geometry.size.height * 0.05)
-
+                
                 // Operator selection
                 OperatorSelectionView(
-                    selectedOperator: $selectedOperator,
-                    currentStreak: $currentStreak,
-                    difficulty: $difficulty,
+                    selectedOperator: $session.selectedOperator,
+                    difficulty: $session.difficulty,
                     highScores: highScores,
                     onOperatorChange: { op in
-                        highScores.updateIfHigher(streak: currentStreak, difficulty: Int(difficulty), op: selectedOperator)
-                        currentStreak = 0
-                        selectedOperator = op
-                        newProblem()
-                        history.removeAll()
+                        session.handleOperatorChange(op)
                     }
                 )
                 .frame(width: geometry.size.width,
@@ -97,13 +118,14 @@ struct ContentView: View {
             .frame(maxHeight: .infinity, alignment: .top)
             .background(Color.blue)
             .onAppear {
-                newProblem()
+                // Do nothing: GameSession handles this
             }
-            .onChange(of: difficulty) { _ in
-                
-                currentStreak = 0
-                newProblem()
-                history.removeAll()
+            .onChange(of: session.difficulty) { _ in 
+                if session.mode == .normal{
+                    session.currentStreak = 0
+                    session.newProblem()
+                    session.history.removeAll()
+                }
             }
             .sheet(isPresented: $showHighScores) {
                 HighScoresView(highScores: highScores)
@@ -111,55 +133,22 @@ struct ContentView: View {
             .sheet(isPresented: $showAbout) {
                 AboutView()
             }
+            .fullScreenCover(
+                isPresented: $presentingCrescendo,
+                onDismiss: {
+//                    session.switchMode(to: .normal)
+                }
+            ) {
+                CrescendoModeView(selectedOperator: session.selectedOperator)
+            }
         }
     }
     
     // MARK: - Helpers
     
     var scoreSymbols: String {
-        let score = highScores.highScore(for: Int(difficulty), op: selectedOperator)
+        let score = highScores.highScore(for: Int(session.difficulty), op: session.selectedOperator)
         return HighScoresView.trophyText(for: score)
-    }
-    
-    func numButton(_ label: String, geometry: GeometryProxy) -> some View {
-        Button(action: {
-            userInput += label
-        }) {
-            Text(label)
-                .responsiveFont(.title2)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .foregroundColor(.white)
-                .background(Color.black.opacity(0.4))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-        }
-        .frame(width: geometry.size.width * 0.25, height: geometry.size.height * 0.08)
-        .contentShape(Rectangle()) // ensures the full frame is tappable
-    }
-    
-    func submitAnswer() {
-        guard let guess = Int(userInput) else { return }
-        let correct = guess == currentProblem.answer
-        history.append((currentProblem, correct, guess))
-        
-        if correct {
-            currentStreak += 1
-        } else {
-            currentStreak = 0
-        }
-        highScores.updateIfHigher(streak: currentStreak, difficulty: Int(difficulty), op: selectedOperator)
-        userInput = ""
-        newProblem()
-    }
-    
-    func newProblem() {
-        currentProblem = generateProblem(difficulty: difficulty, op: selectedOperator)
-        userInput = ""
-    }
-    
-    func scorePercentage() -> Int {
-        guard !history.isEmpty else { return 0 }
-        let correct = history.filter { $0.correct }.count
-        return Int((Double(correct) / Double(history.count)) * 100)
     }
     
     static func difficultyColor(for difficulty: Double) -> Color {

@@ -14,13 +14,13 @@ extension View {
 }
 
 private struct ResponsiveFontModifier: ViewModifier {
-    @Environment(\.dynamicTypeSize) var dynamicTypeSize
     let textStyle: Font.TextStyle
     let baseWidth: CGFloat
     let baseHeight: CGFloat
     let weight: Font.Weight
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
     
-
+    
     func body(content: Content) -> some View {
         let screenWidth = UIScreen.main.bounds.width
         let screenHeight = UIScreen.main.bounds.height
@@ -49,13 +49,13 @@ private struct ResponsiveFontModifier: ViewModifier {
             @unknown default: return 17
             }
         }()
-
+        
         // Combine screen and Dynamic Type scaling
         var fontSize = baseSize * screenScale * dynamicTypeSize.scaleFactor
-
+        
         // Clamp to avoid absurdly large text on iPad + accessibility
         fontSize = min(fontSize, baseSize * 3.0)
-
+        
         return content.font(.system(size: fontSize).weight(weight))
     }
 }
