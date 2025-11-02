@@ -12,6 +12,8 @@ struct AboutView: View {
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
+                
         NavigationView {
             ScrollViewReader { proxy in
                 ScrollView(.vertical, showsIndicators: true) {
@@ -38,7 +40,7 @@ struct AboutView: View {
                             .multilineTextAlignment(.leading)
                         
                         Text("""
-                        Version 1.1\nCreated by Joachim Seland Graff
+                        Version \(version) \nCreated by Joachim Seland Graff
                         """)
                         .multilineTextAlignment(.center)
                     }
