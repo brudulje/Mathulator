@@ -108,6 +108,7 @@ struct HighScoresView: View {
             }
         }
     }
+    
     static func trophyText(for score: Int) -> String {
         switch score {
         case 0...4:

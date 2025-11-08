@@ -41,6 +41,7 @@ struct HeaderView<TrailingContent: View>: View {
 
 struct HistoryView: View {
     let history: [(problem: MathProblem, correct: Bool, guess: Int)]
+    let markList: [Bool]
     let scoreSymbols: String
     let difficulty: Double
     let selectedOperator: Operator
@@ -53,16 +54,21 @@ struct HistoryView: View {
         GeometryReader { geometry in
             VStack {
                 HStack {
-                    let symbols = history.map { $0.correct ? "checkmark.circle.fill" : "xmark.circle.fill" }
+                    let symbols = markList.map { $0 ? "checkmark.circle.fill" : "xmark.circle.fill" }
                     let maxSymbols = 24
                     let filledSymbols = Array(symbols.suffix(maxSymbols))
                     let paddedSymbols = filledSymbols + Array(repeating: "questionmark.circle.fill", count: maxSymbols - filledSymbols.count)
-                    
-                    HStack(spacing: geometry.size.height * 0.02) { // example scaling
-                        ForEach(0..<8, id: \.self) { col in
-                            VStack(spacing: geometry.size.width * 0.01) {
-                                ForEach(0..<3, id: \.self) { row in
-                                    let index = col * 3 + row // row * 7 + col
+//                    if mode == .crescendo {
+//                        scoreSymbols = session.history
+//                            .suffix(3)
+//                            .map { $0.correct ? "checkmark.circle.fill" : "xmark.circle.fill" }
+//                            .joined(),
+//                    }
+                    VStack(spacing: geometry.size.height * 0.02) { // example scaling
+                        ForEach(0..<3, id: \.self) { row in
+                            HStack(spacing: geometry.size.width * 0.01) {
+                                ForEach(0..<8, id: \.self) { col in
+                                    let index = row * 8 + col
                                     Image(systemName: paddedSymbols[index])
                                         .resizable()
                                         .scaledToFit()
@@ -105,7 +111,7 @@ struct HistoryView: View {
                             }
                         }
                     } else if mode == .crescendo {
-                        Text("\(Int(difficulty))")
+                        Text(scoreSymbols)
                             .frame(width: geometry.size.width * 0.3, height:  geometry.size.width * 0.12)
                             .responsiveFont(.title3)
                             .padding(.vertical, geometry.size.height * 0.05)
@@ -128,9 +134,9 @@ struct HistoryView: View {
                             .frame(width: geometry.size.width * 0.85,
                                    height: geometry.size.height * 0.2,
                                    alignment: .leading)
-                            .responsiveFont(.subheadline)
+                            .responsiveFont(.callout)
                             .padding(.leading, geometry.size.width * 0.02)
-                            .background(Color.black.opacity(0.8))
+                            .background(Color.black.opacity(0.85))
                             .foregroundColor(.white)
                             .clipShape(Capsule())
                     } else {
@@ -139,10 +145,10 @@ struct HistoryView: View {
                             .frame(width: geometry.size.width * 0.06, height: geometry.size.width * 0.06)
                             .foregroundColor(.white.opacity(0.85))
                         Text(" ")
-                            .frame(width: geometry.size.width * 0.8,
+                            .frame(width: geometry.size.width * 0.85,
                                    height: geometry.size.height * 0.2,
                                    alignment: .leading)
-                            .responsiveFont(.subheadline)
+                            .responsiveFont(.callout)
                             .padding(.leading, geometry.size.width * 0.02)
                             .background(Color.black.opacity(0.85))
                             .foregroundColor(.white)
@@ -278,18 +284,14 @@ struct DifficultySliderView: View {
 // MARK: - DifficultyDisplayView
 
 struct DifficultyDisplayView: View {
-//    let minDifficulty: Double
-//    let maxDifficulty: Double
     @Binding var difficulty: Double
     
     var body: some View {
         GeometryReader { geometry in
             HStack {
-                Text("Current difficulty")
-                    .foregroundColor(Color.white)
                 Text("\(Int(difficulty))")
-                    .frame(minWidth: geometry.size.width * 0.08, minHeight: geometry.size.width * 0.08)
-                    .responsiveFont(.subheadline)
+                    .frame(minWidth: geometry.size.width * 0.2, minHeight: geometry.size.width * 0.2)
+                    .responsiveFont(.body)
                     .padding(6)
                     .background(ContentView.difficultyColor(for: difficulty))
                     .animation(.easeInOut(duration: 0.3), value: difficulty)
@@ -297,7 +299,7 @@ struct DifficultyDisplayView: View {
                     .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.white, lineWidth: 2))
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.black.opacity(0.6))
+            .background(Color.black.opacity(0))
             .cornerRadius(10)
         }
     }

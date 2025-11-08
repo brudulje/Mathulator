@@ -61,6 +61,7 @@ struct ContentView: View {
                 // History
                 HistoryView(
                     history: session.history,
+                    markList: session.passFailMarkList,
                     scoreSymbols: scoreSymbols,
                     difficulty: session.difficulty,
                     selectedOperator: session.selectedOperator,

@@ -28,6 +28,8 @@ final class GameSession: ObservableObject {
     @Published var difficulty: Double
     @Published var currentStreak = 0
     @Published var problemCount: Int = 0
+    @Published var crescendoProblemsPerDifficulty = 3
+    @Published var passFailMarkList: [Bool] = []
     
 }
 
@@ -35,13 +37,15 @@ extension GameSession {
     func submitAnswer() {  // This is the function all modes should run.
 //        print("Got new input: \(userInput)")
         guard let guess = Int(userInput) else { return }
-        let correct = GameLogic.checkAnswer(guess, for: currentProblem)
-        history.append((currentProblem, correct, guess))
+        let isCorrect = GameLogic.checkAnswer(guess, for: currentProblem)
+        history.append((currentProblem, isCorrect, guess))
+        
 //        print("Got answer: \(guess), in mode: \(mode)")
         switch mode {
         case .normal:
+            passFailMarkList.append(isCorrect)
 //            print("in normal mode")
-            if correct {
+            if isCorrect {
                 currentStreak += 1
             } else {
                 currentStreak = 0
@@ -54,10 +58,18 @@ extension GameSession {
             
         case .crescendo:
 //            print("in crescendo mode")
-            if correct {
-                difficulty += 1 // Crescendo magic
+            problemCount += 1
+            if isCorrect {
+                currentStreak += 1
+                if problemCount.isMultiple(of: crescendoProblemsPerDifficulty) {
+                    passFailMarkList.append(isCorrect)
+                    difficulty += 1 // Crescendo magic
+                    currentStreak = 0
+//                    history.removeAll()
+                }
             } else {
-                difficulty = max(difficulty - 1, DifficultyConfig.minDifficulty)
+//                difficulty = max(difficulty - 1, DifficultyConfig.minDifficulty)
+                // Stop crescendo mode
             }
             // FIXME: Update crescendo score list
         }

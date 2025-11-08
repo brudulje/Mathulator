@@ -48,7 +48,8 @@ struct CrescendoModeView: View {
                 // History
                 HistoryView(
                     history: session.history,
-                    scoreSymbols: "",  // scoreSymbols not used for crescendo mode
+                    markList: session.passFailMarkList,
+                    scoreSymbols: CrescendoModeView.scoreText(for: session.currentStreak),
                     difficulty: session.difficulty,
                     selectedOperator: session.selectedOperator,
                     mode: .crescendo,
@@ -85,13 +86,30 @@ struct CrescendoModeView: View {
                     difficulty: $session.difficulty,
                 )
                 .padding(.horizontal)
-                .frame(height: geometry.size.height * 0.15)
+                .frame(width: geometry.size.width * 0.5, height: geometry.size.height * 0.15)
             }
             .frame(maxHeight: .infinity, alignment: .top)
             .background(Color.purple.opacity(0.7))
         }
         .onAppear {
             // Do nothing; GameSession handles this part
+        }
+    }
+    
+    // MARK: Helpers
+    
+    static func scoreText(for score: Int) -> String {
+        switch score {
+        case 0:
+            return "\u{2754}\u{2754}\u{2754}"
+        case 1:
+            return "\u{2705}\u{2754}\u{2754}"
+        case 2:
+            return "\u{2705}\u{2705}\u{2754}"
+        case 3:
+            return "\u{2705}\u{2705}\u{2705}"
+        default:
+            return "\(score)"
         }
     }
 }
