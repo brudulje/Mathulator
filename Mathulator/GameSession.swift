@@ -113,4 +113,8 @@ extension GameSession {
             currentProblem = generateProblem(difficulty: difficulty, op: op)
         }
     
+        func endCrescendo() {
+            // FIXME: Use this to stop crescendo and revert to normal at last used difficulty
+        mode = .normal
+    }
 }

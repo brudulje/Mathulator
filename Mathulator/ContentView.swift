@@ -120,7 +120,7 @@ struct ContentView: View {
             .onAppear {
                 // Do nothing: GameSession handles this
             }
-            .onChange(of: session.difficulty) { _ in 
+            .onChange(of: session.difficulty) { _ in
                 if session.mode == .normal{
                     session.currentStreak = 0
                     session.newProblem()
@@ -130,16 +130,13 @@ struct ContentView: View {
             .fullScreenCover(
                 isPresented: $presentingCrescendo,
                 onDismiss: {
-//                    session.switchMode(to: .normal)
+//                    print("Dismissing full screen cover")
+                    session.mode = .normal
                 }
             ) {
-//                if #available(iOS 16.4, *) {
-//                    CrescendoModeView(selectedOperator: session.selectedOperator)
-//                        .presentationBackground(.white) // optional cosmetic tweak
-//                        .presentationDetents([])         // <- disables sheet detents
-//                }else{
-                    CrescendoModeView(selectedOperator: session.selectedOperator)
-//                }
+                CrescendoModeView(isPresented: $presentingCrescendo,
+                                  selectedOperator: session.selectedOperator
+                                  )
             }
             .sheet(isPresented: $showHighScores) {
                 HighScoresView(highScores: highScores)
@@ -151,7 +148,7 @@ struct ContentView: View {
                 isPresented: $showingCrescendoSetup,
                 onDismiss: {
                         if session.mode == .crescendo {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 5.3) {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                                 presentingCrescendo = true
                             }
                         }
@@ -161,7 +158,7 @@ struct ContentView: View {
                         onStart: { selectedOp in
                             session.startCrescendo(with: selectedOp)
                             showingCrescendoSetup = false
-                            presentingCrescendo = true
+//                            presentingCrescendo = true
                         },
                         highScores: session.highScores,
                         difficulty: $session.difficulty
@@ -173,7 +170,7 @@ struct ContentView: View {
                         onStart: { selectedOp in
                             session.startCrescendo(with: selectedOp)
                             showingCrescendoSetup = false
-                            presentingCrescendo = true
+//                            presentingCrescendo = true
                         },
                         highScores: session.highScores,
                         difficulty: $session.difficulty

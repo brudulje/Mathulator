@@ -8,20 +8,23 @@
 import SwiftUI
 
 struct CrescendoModeView: View {
+    @Binding var isPresented: Bool
+    
     @StateObject private var session = GameSession(
         mode: .crescendo,
         startDifficulty: 6,
         selectedOperator: .add,
         highScores: HighScores.shared
     )
-    init(selectedOperator: Operator) {
+    init(isPresented: Binding<Bool>, selectedOperator: Operator) {
+        _isPresented =  isPresented
         _session = StateObject(
             wrappedValue: GameSession(
                 mode: .crescendo,
                 startDifficulty: DifficultyConfig.minDifficulty,
                 selectedOperator: selectedOperator,   //  use whatever operator the parent sends
                 highScores: HighScores.shared
-            )
+                )
         )
     }
     
@@ -40,7 +43,8 @@ struct CrescendoModeView: View {
                            difficulty: $session.difficulty,
                 ){
                     Button("Close") {
-                        dismiss()
+//                        print("Pressed Close")
+                        isPresented = false
                     }
                     .padding(.trailing, 10)
                 }
