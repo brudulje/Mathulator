@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var showHighScoreDetail = false
     @State private var showAbout = false
-    @State private var presentingCrescendo = false
     @State private var showHighScores = false
+    @State private var showHighScoreDetail = false
+    @State private var showingCrescendoSetup = false
+    @State private var presentingCrescendo = false
     
     @StateObject private var session = GameSession(
         mode: .normal,
@@ -37,11 +38,9 @@ struct ContentView: View {
                 ){
                     Menu {
                         Button("🏆 Trophies") { showHighScores = true }
-                        Button("\u{1F4C8} Crescendo Mode") {
-//                            session.enterCrescendo()   // sets session.mode + difficulty
-                            presentingCrescendo = true // triggers cover reliably
+                        Button("📈 Crescendo Mode") {  // \u{1F4C8}
+                            showingCrescendoSetup = true
                         }
-                        
                         Divider()
                         Button("ℹ About") { showAbout = true }
                     } label: {
@@ -128,20 +127,60 @@ struct ContentView: View {
                     session.history.removeAll()
                 }
             }
-            .sheet(isPresented: $showHighScores) {
-                HighScoresView(highScores: highScores)
-            }
-            .sheet(isPresented: $showAbout) {
-                AboutView()
-            }
             .fullScreenCover(
                 isPresented: $presentingCrescendo,
                 onDismiss: {
 //                    session.switchMode(to: .normal)
                 }
             ) {
-                CrescendoModeView(selectedOperator: session.selectedOperator)
+//                if #available(iOS 16.4, *) {
+//                    CrescendoModeView(selectedOperator: session.selectedOperator)
+//                        .presentationBackground(.white) // optional cosmetic tweak
+//                        .presentationDetents([])         // <- disables sheet detents
+//                }else{
+                    CrescendoModeView(selectedOperator: session.selectedOperator)
+//                }
             }
+            .sheet(isPresented: $showHighScores) {
+                HighScoresView(highScores: highScores)
+            }
+            .sheet(isPresented: $showAbout) {
+                AboutView()
+            }
+            .sheet(
+                isPresented: $showingCrescendoSetup,
+                onDismiss: {
+                        if session.mode == .crescendo {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 5.3) {
+                                presentingCrescendo = true
+                            }
+                        }
+                    }) {
+                if #available(iOS 16.0, *) {
+                    CrescendoStartView(
+                        onStart: { selectedOp in
+                            session.startCrescendo(with: selectedOp)
+                            showingCrescendoSetup = false
+                            presentingCrescendo = true
+                        },
+                        highScores: session.highScores,
+                        difficulty: $session.difficulty
+                    )
+                    .presentationDetents(UIDevice.current.userInterfaceIdiom == .pad ? [.large] :[.medium])
+                    .presentationDragIndicator(.visible)
+                } else {
+                    CrescendoStartView(
+                        onStart: { selectedOp in
+                            session.startCrescendo(with: selectedOp)
+                            showingCrescendoSetup = false
+                            presentingCrescendo = true
+                        },
+                        highScores: session.highScores,
+                        difficulty: $session.difficulty
+                    )
+                }
+            }
+
         }
     }
     

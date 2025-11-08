@@ -8,7 +8,7 @@
 import Foundation
 
 final class GameSession: ObservableObject {
-    let mode: GameMode
+//    let mode: GameMode
     let highScores: HighScores   // or whatever type you already use
     
     init(mode: GameMode, startDifficulty: Double, selectedOperator: Operator, highScores: HighScores) {
@@ -21,6 +21,7 @@ final class GameSession: ObservableObject {
     }
     
     // Core state shared between modes
+    @Published var mode: GameMode
     @Published var currentProblem: MathProblem // = generateProblem(difficulty: 11, op: .add)
     @Published var userInput = ""
     @Published var history: [(problem: MathProblem, correct: Bool, guess: Int)] = []
@@ -102,4 +103,14 @@ extension GameSession {
         // Generate a new problem for the selected operator
         newProblem()
     }
+    
+        func startCrescendo(with op: Operator) {
+            mode = .crescendo
+            selectedOperator = op
+            difficulty = DifficultyConfig.minDifficulty
+            history.removeAll()
+            userInput = ""
+            currentProblem = generateProblem(difficulty: difficulty, op: op)
+        }
+    
 }
