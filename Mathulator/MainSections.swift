@@ -210,6 +210,7 @@ struct ProblemDisplayView: View {
 struct NumpadView: View {
     var onTap: (String) -> Void
     var onEnter: () -> Void
+    var numPadBackgroundColor: Color = .orange
     
     var body: some View {
         VStack(spacing: 3) {
@@ -234,7 +235,7 @@ struct NumpadView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.orange)
+        .background(numPadBackgroundColor)
         //        .clipShape(RoundedRectangle(cornerRadius: 5))
     }
     

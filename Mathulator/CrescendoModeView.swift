@@ -76,10 +76,11 @@ struct CrescendoModeView: View {
                 // Numpad
                 NumpadView(
                     onTap: { session.userInput += $0 },
-                    onEnter: session.submitAnswer
+                    onEnter: session.submitAnswer,
+                    numPadBackgroundColor: Color.black.opacity(0)
                 )
                 .padding()
-                .background(Color.orange)
+                .background(Color.black.opacity(0.3))
                 .frame(width: geometry.size.width * 0.90,
                        height: geometry.size.height * 0.36)
                 .clipShape(RoundedRectangle(cornerRadius: 15))
