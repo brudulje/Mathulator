@@ -148,7 +148,14 @@ struct ContentView: View {
                 AboutView()
             }
             .sheet(isPresented: $showMedals) {
-                CrescendoScoresView(crescendoScores: CrescendoScores.shared)
+                let medals = CrescendoScoresView(crescendoScores: CrescendoScores.shared)
+                if #available(iOS 16.0, *) {
+                    medals
+                        .presentationDetents(UIDevice.current.userInterfaceIdiom == .pad ? [.large] :[.medium])
+                        .presentationDragIndicator(.visible)
+                } else {
+                    medals
+                }
             }
             .sheet(
                 isPresented: $showingCrescendoSetup,

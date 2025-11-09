@@ -38,7 +38,7 @@ struct CrescendoSummaryView: View {
                 }
                 .buttonStyle(.borderedProminent)
             }
-            .navigationTitle("Crescendo done")
+            .navigationTitle("Crescendo mode done")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
