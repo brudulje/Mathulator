@@ -13,12 +13,14 @@ struct ContentView: View {
     @State private var showHighScoreDetail = false
     @State private var showingCrescendoSetup = false
     @State private var presentingCrescendo = false
+    @State private var showMedals = false
     
     @StateObject private var session = GameSession(
         mode: .normal,
         startDifficulty: 11,
         selectedOperator: .add,
         highScores: HighScores.shared
+        
     )
     
     static let minDifficulty = DifficultyConfig.minDifficulty
@@ -37,6 +39,8 @@ struct ContentView: View {
                 ){
                     Menu {
                         Button("🏆 Trophies") { showHighScores = true }
+                        Button("\u{1F3C5} Medals") { showMedals = true }
+                        Divider()
                         Button("📈 Crescendo Mode") {  // \u{1F4C8}
                             showingCrescendoSetup = true
                         }
@@ -142,6 +146,9 @@ struct ContentView: View {
             }
             .sheet(isPresented: $showAbout) {
                 AboutView()
+            }
+            .sheet(isPresented: $showMedals) {
+                CrescendoScoresView(crescendoScores: CrescendoScores.shared)
             }
             .sheet(
                 isPresented: $showingCrescendoSetup,

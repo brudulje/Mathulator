@@ -9,7 +9,7 @@ import Foundation
 
 final class GameSession: ObservableObject {
 //    let mode: GameMode
-    let highScores: HighScores   // or whatever type you already use
+    let highScores: HighScores  
     
     init(mode: GameMode, startDifficulty: Double, selectedOperator: Operator, highScores: HighScores) {
         self.mode = mode
@@ -72,8 +72,9 @@ extension GameSession {
                     }
                 }
             } else {
-//                difficulty = max(difficulty - 1, DifficultyConfig.minDifficulty)
+//                // Used failed problem in crescendo mode; crescendo mode done!
                 // Stop crescendo mode
+                endCrescendo(difficulty: Int(difficulty))
             }
             // FIXME: Update crescendo score list
         }
@@ -116,8 +117,11 @@ extension GameSession {
             currentProblem = generateProblem(difficulty: difficulty, op: op)
         }
     
-        func endCrescendo() {
-            // FIXME: Use this to stop crescendo and revert to normal at last used difficulty
+    func endCrescendo(difficulty: Int) {
+        // FIXME: Use this to stop crescendo and revert to normal at last used difficulty
+        CrescendoScores.shared.updateIfHigher(difficulty: difficulty, op: selectedOperator)
+        history.removeAll()
+        userInput = ""
         mode = .normal
     }
 }
