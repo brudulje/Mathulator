@@ -38,7 +38,6 @@ struct CrescendoStartView: View {
                 .buttonStyle(.borderedProminent)
                 .padding(.top)
             }
-            
             .navigationTitle("Crescendo settings")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

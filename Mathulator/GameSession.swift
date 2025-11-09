@@ -31,7 +31,10 @@ final class GameSession: ObservableObject {
     @Published var problemCount: Int = 0
     @Published var crescendoProblemsPerDifficulty = 3
     @Published var passFailMarkList: [Bool] = []
-    
+    @Published var showCrescendoSummary = false
+    @Published var newRecordSet = false
+    @Published var oldCrescendoRecord: Int? = nil
+    @Published var newCrescendoRecord: Int? = nil
 }
 
 extension GameSession {
@@ -64,19 +67,17 @@ extension GameSession {
             if isCorrect {
                 currentStreak += 1
                 if problemCount.isMultiple(of: crescendoProblemsPerDifficulty) {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
                         self.passFailMarkList.append(isCorrect)
                         self.difficulty += 1 // Crescendo magic
                         self.currentStreak = 0
-                        //                    history.removeAll()
-                    }
                 }
             } else {
-//                // Used failed problem in crescendo mode; crescendo mode done!
+                // User failed problem in crescendo mode; crescendo mode done!
                 // Stop crescendo mode
                 endCrescendo(difficulty: Int(difficulty))
+                showCrescendoSummary = true // trigger modal
+                return
             }
-            // FIXME: Update crescendo score list
         }
         
         // Whatever the mode is, create a new problem
@@ -119,7 +120,14 @@ extension GameSession {
     
     func endCrescendo(difficulty: Int) {
         // FIXME: Use this to stop crescendo and revert to normal at last used difficulty
-        CrescendoScores.shared.updateIfHigher(difficulty: difficulty, op: selectedOperator)
+        let oldRecord = CrescendoScores.shared.crescendoScore(op: selectedOperator) // get previous record
+        let didSetNewRecord = CrescendoScores.shared.updateIfHigher(difficulty: difficulty, op: selectedOperator)
+        let newRecord = CrescendoScores.shared.crescendoScore(op: selectedOperator) // get updated record
+
+        oldCrescendoRecord = oldRecord
+        newCrescendoRecord = newRecord
+        newRecordSet = didSetNewRecord
+
         history.removeAll()
         userInput = ""
         mode = .normal

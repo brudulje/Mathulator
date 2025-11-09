@@ -32,6 +32,7 @@ struct CrescendoModeView: View {
     
     @Environment(\.dismiss) private var dismiss
     
+//    @available(iOS 16.0, *)
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 7) {
@@ -98,6 +99,45 @@ struct CrescendoModeView: View {
         }
         .onAppear {
             // Do nothing; GameSession handles this part
+        }
+        .sheet(isPresented: $session.showCrescendoSummary) {
+            if #available(iOS 16.0, *) {
+                CrescendoSummaryView(
+                    difficulty: Int(session.difficulty),
+                    selectedOperator: session.selectedOperator,
+                    newRecordSet: session.newRecordSet,
+                    oldRecord: session.oldCrescendoRecord,
+                    newRecord: session.newCrescendoRecord,
+                    isPresented: $isPresented,
+                    onDismiss: {
+                        session.showCrescendoSummary = false
+                        session.mode = .normal
+                    }
+                )
+//                .applyIfAvailableiOS160 {
+//                        $0
+//                            .presentationDetents(UIDevice.current.userInterfaceIdiom == .pad ? [.large] : [.medium])
+//                            .presentationDragIndicator(.visible)
+//                    } else {
+                        // Fallback on earlier versions
+//                    }
+//                }                // modal size here
+                .presentationDetents(UIDevice.current.userInterfaceIdiom == .pad ? [.large] :[.medium])
+                .presentationDragIndicator(.visible)
+            } else {
+                CrescendoSummaryView(
+                    difficulty: Int(session.difficulty),
+                    selectedOperator: session.selectedOperator,
+                    newRecordSet: session.newRecordSet,
+                    oldRecord: session.oldCrescendoRecord,
+                    newRecord: session.newCrescendoRecord,
+                    isPresented: $isPresented,
+                    onDismiss: {
+                        session.showCrescendoSummary = false
+                        session.mode = .normal
+                    }
+                )
+            }
         }
     }
     

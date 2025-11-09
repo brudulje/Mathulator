@@ -39,12 +39,15 @@ class CrescendoScores: ObservableObject {
         matrix[row] = 0
     }
     
-    func updateIfHigher(difficulty: Int, op: Operator) {
+    func updateIfHigher(difficulty: Int, op: Operator) -> Bool {
         guard let row = Operator.allCases.firstIndex(of: op)
-        else { return }
+        else { return false}
         
         if difficulty > matrix[row] {
             matrix[row] = difficulty
+            return true  // let caller know that score was better than last highest
+        } else {
+            return false
         }
     }
     
