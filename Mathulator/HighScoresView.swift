@@ -89,20 +89,17 @@ struct HighScoresView: View {
                     }
                 }
                 .sheet(item: $selectedDetail) { detail in
-                    if #available(iOS 16.0, *) {
-                        HighScoreDetailView(
+                        let scoreDetail = HighScoreDetailView(
                             difficulty: detail.difficulty,
                             op: detail.op,
                             highScores: highScores
                         )
+                    if #available(iOS 16.0, *) {
+                    scoreDetail
                         .presentationDetents(UIDevice.current.userInterfaceIdiom == .pad ? [.large] :[.medium])
                         .presentationDragIndicator(.visible)
                     } else {
-                        HighScoreDetailView(
-                            difficulty: detail.difficulty,
-                            op: detail.op,
-                            highScores: highScores
-                        )
+                       scoreDetail
                     }
                 }
             }

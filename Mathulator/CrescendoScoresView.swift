@@ -89,41 +89,10 @@ struct CrescendoScoresView: View {
                         }
                     }
                 }
-//                .sheet(item: $selectedDetail) { detail in
-//                    if #available(iOS 16.0, *) {
-//                        HighScoreDetailView(
-//                            difficulty: detail.difficulty,
-//                            op: detail.op,
-//                            highScores: highScores
-//                        )
-//                        .presentationDetents(UIDevice.current.userInterfaceIdiom == .pad ? [.large] :[.medium])
-//                        .presentationDragIndicator(.visible)
-//                    } else {
-//                        HighScoreDetailView(
-//                            difficulty: detail.difficulty,
-//                            op: detail.op,
-//                            highScores: highScores
-//                        )
-//                    }
-//                }
+
             }
         }
     }
-    
-//    static func trophyText(for score: Int) -> String {
-//        switch score {
-//        case 0...4:
-//            return ""
-//        case 5...11:
-//            return "\u{1F31F}"  // Unicode star
-//        case 12...19:
-//            return "\u{1F31F} \u{1F3C5}"  // Unicode star, medal
-//        case 20...:
-//            return "\u{1F31F}\u{1F3C5}\u{1F451}"  // Unicode star, medal, crown
-//        default:
-//            return "\(score)"
-//        }
-//    }
     
     static func highScoreBackgroundColor(for score: Int) -> Color {
         switch score {
@@ -136,9 +105,3 @@ struct CrescendoScoresView: View {
         }
     }
 }
-
-//struct ScoreDetail: Identifiable {
-//    let id = UUID()
-//    let difficulty: Int
-//    let op: Operator
-//}

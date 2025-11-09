@@ -94,21 +94,17 @@ struct HistoryView: View {
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
                         }
                         .sheet(isPresented: $showHighScoreDetail) {
-                            if #available(iOS 16.0, *) {
-                                HighScoreDetailView(
+                                let scoreDetail = HighScoreDetailView(
                                     difficulty: Int(difficulty),
                                     op: selectedOperator,
                                     highScores: highScores
                                 )
+                            if #available(iOS 16.0, *) {
+                            scoreDetail
                                 .presentationDetents(UIDevice.current.userInterfaceIdiom == .pad ? [.large] : [.medium])
                                 .presentationDragIndicator(.visible)
                             } else {
-                                HighScoreDetailView(
-                                    difficulty: Int(difficulty),
-                                    op: selectedOperator,
-                                    highScores: highScores
-                                )
-                            }
+                                scoreDetail                            }
                         }
                     } else if mode == .crescendo {
                         Text(scoreSymbols)

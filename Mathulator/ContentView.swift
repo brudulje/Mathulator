@@ -153,36 +153,29 @@ struct ContentView: View {
             .sheet(
                 isPresented: $showingCrescendoSetup,
                 onDismiss: {
-                        if session.mode == .crescendo {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                presentingCrescendo = true
-                            }
+                    if session.mode == .crescendo {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            presentingCrescendo = true
                         }
-                    }) {
-                if #available(iOS 16.0, *) {
-                    CrescendoStartView(
+                    }
+                }) {
+                    let crescendo = CrescendoStartView(
                         onStart: { selectedOp in
                             session.startCrescendo(with: selectedOp)
                             showingCrescendoSetup = false
-//                            presentingCrescendo = true
+                            //                            presentingCrescendo = true
                         },
                         highScores: HighScores.shared,
                         difficulty: $session.difficulty
                     )
-                    .presentationDetents(UIDevice.current.userInterfaceIdiom == .pad ? [.large] :[.medium])
-                    .presentationDragIndicator(.visible)
-                } else {
-                    CrescendoStartView(
-                        onStart: { selectedOp in
-                            session.startCrescendo(with: selectedOp)
-                            showingCrescendoSetup = false
-//                            presentingCrescendo = true
-                        },
-                        highScores: HighScores.shared,
-                        difficulty: $session.difficulty
-                    )
+                    if #available(iOS 16.0, *) {
+                        crescendo
+                            .presentationDetents(UIDevice.current.userInterfaceIdiom == .pad ? [.large] :[.medium])
+                            .presentationDragIndicator(.visible)
+                    } else {
+                        crescendo
+                    }
                 }
-            }
 
         }
     }
