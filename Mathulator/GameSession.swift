@@ -64,10 +64,12 @@ extension GameSession {
             if isCorrect {
                 currentStreak += 1
                 if problemCount.isMultiple(of: crescendoProblemsPerDifficulty) {
-                    passFailMarkList.append(isCorrect)
-                    difficulty += 1 // Crescendo magic
-                    currentStreak = 0
-//                    history.removeAll()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                        self.passFailMarkList.append(isCorrect)
+                        self.difficulty += 1 // Crescendo magic
+                        self.currentStreak = 0
+                        //                    history.removeAll()
+                    }
                 }
             } else {
 //                difficulty = max(difficulty - 1, DifficultyConfig.minDifficulty)

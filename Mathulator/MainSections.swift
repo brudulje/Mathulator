@@ -114,6 +114,7 @@ struct HistoryView: View {
                         Text(scoreSymbols)
                             .frame(width: geometry.size.width * 0.3, height:  geometry.size.width * 0.12)
                             .responsiveFont(.title3)
+                            .animation(.easeInOut(duration: 0.3), value: scoreSymbols)
                             .padding(.vertical, geometry.size.height * 0.05)
                             .background(Color.white.opacity(0.4))
                             .clipShape(RoundedRectangle(cornerRadius: 10))
