@@ -58,7 +58,7 @@ struct CrescendoModeView: View {
                     selectedOperator: session.selectedOperator,
                     mode: .crescendo,
                     showHighScoreDetail: .constant(false),
-                    highScores: session.highScores,
+                    highScores: HighScores.shared,
                 )
                 .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.18)
                 .padding(3)

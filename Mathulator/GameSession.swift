@@ -51,6 +51,7 @@ extension GameSession {
             } else {
                 currentStreak = 0
             }
+            print("Checking high score, current streak: \(currentStreak)")
             highScores.updateIfHigher(
                 streak: currentStreak,
                 difficulty: Int(difficulty),

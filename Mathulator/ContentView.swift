@@ -20,7 +20,6 @@ struct ContentView: View {
         selectedOperator: .add,
         highScores: HighScores.shared
     )
-    @StateObject private var highScores = HighScores()
     
     static let minDifficulty = DifficultyConfig.minDifficulty
     static let maxDifficulty = DifficultyConfig.maxDifficulty
@@ -61,12 +60,12 @@ struct ContentView: View {
                 HistoryView(
                     history: session.history,
                     markList: session.passFailMarkList,
-                    scoreSymbols: scoreSymbols,
+                    scoreSymbols: scoreText(for: Int(session.difficulty), selectedOperator: session.selectedOperator),
                     difficulty: session.difficulty,
                     selectedOperator: session.selectedOperator,
                     mode: .normal,
                     showHighScoreDetail: $showHighScoreDetail,
-                    highScores: highScores,
+                    highScores: HighScores.shared,
                     
                 )
                 .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.18)
@@ -107,7 +106,7 @@ struct ContentView: View {
                 OperatorSelectionView(
                     selectedOperator: $session.selectedOperator,
                     difficulty: $session.difficulty,
-                    highScores: highScores,
+                    highScores: HighScores.shared,
                     onOperatorChange: { op in
                         session.handleOperatorChange(op)
                     }
@@ -139,7 +138,7 @@ struct ContentView: View {
                                   )
             }
             .sheet(isPresented: $showHighScores) {
-                HighScoresView(highScores: highScores)
+                HighScoresView(highScores: HighScores.shared)
             }
             .sheet(isPresented: $showAbout) {
                 AboutView()
@@ -160,7 +159,7 @@ struct ContentView: View {
                             showingCrescendoSetup = false
 //                            presentingCrescendo = true
                         },
-                        highScores: session.highScores,
+                        highScores: HighScores.shared,
                         difficulty: $session.difficulty
                     )
                     .presentationDetents(UIDevice.current.userInterfaceIdiom == .pad ? [.large] :[.medium])
@@ -172,7 +171,7 @@ struct ContentView: View {
                             showingCrescendoSetup = false
 //                            presentingCrescendo = true
                         },
-                        highScores: session.highScores,
+                        highScores: HighScores.shared,
                         difficulty: $session.difficulty
                     )
                 }
@@ -183,8 +182,8 @@ struct ContentView: View {
     
     // MARK: - Helpers
     
-    var scoreSymbols: String {
-        let score = highScores.highScore(for: Int(session.difficulty), op: session.selectedOperator)
+    func scoreText(for difficulty: Int, selectedOperator: Operator) -> String {
+        let score = HighScores.shared.highScore(for: Int(difficulty), op: selectedOperator)
         return HighScoresView.trophyText(for: score)
     }
     
