@@ -113,10 +113,10 @@ struct CrescendoModeView: View {
                     session.mode = .normal
                 }
             )
-            if #available(iOS 16.0, *) {  // FIXME: Apply this fix elsewhere too
+                .interactiveDismissDisabled(true)
+            if #available(iOS 16.0, *) {
                 summary
                     .presentationDetents(UIDevice.current.userInterfaceIdiom == .pad ? [.large] : [.medium])
-                    .presentationDragIndicator(.visible)
             } else {
                 summary
             }

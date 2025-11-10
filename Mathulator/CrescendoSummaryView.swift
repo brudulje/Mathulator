@@ -40,13 +40,6 @@ struct CrescendoSummaryView: View {
             }
             .navigationTitle("Crescendo mode done")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Close") {
-                        onDismiss()
-                    }
-                }
-            }
             .padding()
         }
     }
