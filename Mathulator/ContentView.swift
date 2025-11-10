@@ -128,6 +128,7 @@ struct ContentView: View {
                     session.currentStreak = 0
                     session.newProblem()
                     session.history.removeAll()
+                    session.passFailMarkList.removeAll()
                 }
             }
             .fullScreenCover(

@@ -104,6 +104,7 @@ extension GameSession {
         currentStreak = 0
         selectedOperator = newOperator
         history.removeAll()
+        passFailMarkList.removeAll()
         
         // Generate a new problem for the selected operator
         newProblem()
@@ -114,6 +115,7 @@ extension GameSession {
             selectedOperator = op
             difficulty = DifficultyConfig.minDifficulty
             history.removeAll()
+            passFailMarkList.removeAll()
             userInput = ""
             currentProblem = generateProblem(difficulty: difficulty, op: op)
         }
@@ -129,6 +131,7 @@ extension GameSession {
         newRecordSet = didSetNewRecord
 
         history.removeAll()
+        passFailMarkList.removeAll()
         userInput = ""
         mode = .normal
     }
