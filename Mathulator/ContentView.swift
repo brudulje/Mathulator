@@ -39,7 +39,7 @@ struct ContentView: View {
                 ){
                     Menu {
                         Button("🏆 Trophies") { showHighScores = true }
-                        Button("\u{1F3C5} Medals") { showMedals = true }
+                        Button("\u{1F3AF} Top scores") { showMedals = true }  // \u{1F3C5} sports medal
                         Divider()
                         Button("📈 Crescendo Mode") {  // \u{1F4C8}
                             showingCrescendoSetup = true

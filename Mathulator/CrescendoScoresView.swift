@@ -80,7 +80,7 @@ struct CrescendoScoresView: View {
                         .padding()
                     }
                 }
-                .navigationTitle("\u{1F3C5}\u{1F3C5}\u{1F3C5}")
+                .navigationTitle("\u{1F3AF}\u{1F3AF}\u{1F3AF}")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
