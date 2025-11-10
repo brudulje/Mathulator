@@ -17,7 +17,7 @@ struct CrescendoScoresView: View {
             NavigationView {
                 VStack {
                     let firstColunmWidth = 0.1
-                    let otherColumnWidth = 0.17
+                    let otherColumnWidth = 0.18
                     let tableColumnsWidth = 0.16
                     HStack {
                         // Fixed top row in High scores
@@ -30,7 +30,7 @@ struct CrescendoScoresView: View {
                         ForEach(Operator.allCases, id: \.self) { op in
                             Text(op.rawValue)
                                 .frame(width: geometry.size.width * otherColumnWidth,
-                                       height: UIDevice.current.userInterfaceIdiom == .pad ? geometry.size.height * 0.09 : geometry.size.height * 0.06, alignment: .center)
+                                       height: UIDevice.current.userInterfaceIdiom == .pad ? geometry.size.height * 0.12 : geometry.size.height * 0.09, alignment: .center)
                                 .responsiveFont(.title2)
                             //                                    .padding(1)
                                 .foregroundColor(Color.white)
@@ -53,7 +53,7 @@ struct CrescendoScoresView: View {
                                     // Use custom colors for each row heading
                                     Text("📈")
                                         .frame(width: geometry.size.width * firstColunmWidth, alignment: .center)
-                                        .responsiveFont(.caption)
+                                        .responsiveFont(.body)
                                         .padding(4)
                                         .foregroundColor(Color.black)
 //                                        .background(ContentView.difficultyColor(for: Double(difficulty)))
@@ -67,7 +67,7 @@ struct CrescendoScoresView: View {
 //                                        }) {
                                             Text("\(score)")
                                                 .frame(width: geometry.size.width * tableColumnsWidth)
-                                                .responsiveFont(.caption2)
+                                                .responsiveFont(.body)
                                                 .padding(4)
                                                 .background(ContentView.difficultyColor(for: Double(score)))
 //                                                .background(HighScoresView.highScoreBackgroundColor(for: score))
