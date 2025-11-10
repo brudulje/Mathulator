@@ -265,14 +265,17 @@ struct DifficultySliderView: View {
             HStack {
                 Slider(value: $difficulty, in: minDifficulty...maxDifficulty, step: 1)
                     .accentColor(.green)
-                Text("\(Int(difficulty))")
-                    .frame(minWidth: geometry.size.width * 0.05)
-                    .responsiveFont(.caption)
-                    .padding(6)
-                    .background(ContentView.difficultyColor(for: difficulty))
-                    .animation(.easeInOut(duration: 0.3), value: difficulty)
-                    .cornerRadius(10)
-                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.white, lineWidth: 2))
+                Button (action: { difficulty += 1 }){
+                    Text("\(Int(difficulty))")
+                        .frame(minWidth: geometry.size.width * 0.06)
+                        .responsiveFont(.caption)
+                        .padding(6)
+                        .background(ContentView.difficultyColor(for: difficulty))
+                        .foregroundColor(Color.black)
+                        .animation(.easeInOut(duration: 0.3), value: difficulty)
+                        .cornerRadius(10)
+                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.white, lineWidth: 2))
+                }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
