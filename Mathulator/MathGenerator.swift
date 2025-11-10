@@ -29,28 +29,32 @@ func interval(for difficulty: Double) -> (Int, Int) {
 }
 
 func generateProblem(difficulty: Double, op: Operator) -> MathProblem {
-    let (lower, upper) = interval(for: difficulty)
+//    let (lower, upper) = interval(for: difficulty)
     let x: Int
     let y: Int
     let answer: Int
     
     switch op {
-    case .mult:
-        x = Int.random(in: lower...upper)
-        y = Int.random(in: lower...upper)
-        answer = x * y
     case .add:
+        let (lower, upper) = interval(for: difficulty)
         x = Int.random(in: lower...upper)
         y = Int.random(in: lower...upper)
         answer = x + y
     case .sub:
+        let (lower, upper) = interval(for: difficulty)
         x = Int.random(in: lower...upper)
         y = Int.random(in: lower...upper)
         answer = x - y
+    case .mult:
+        let (lower, upper) = interval(for: 0.8 * difficulty)
+        x = Int.random(in: lower...upper)
+        y = Int.random(in: lower...upper)
+        answer = x * y
     case .div:
-        let xUpper = interval(for: 1.5 * difficulty).1
+        let (lower, _) = interval(for: difficulty)
+        let (_, upper) = interval(for: 1.5 * difficulty)
         y = Int.random(in: 2...Int(difficulty))
-        let quotient = Int.random(in: lower...xUpper / max(y, 1))
+        let quotient = Int.random(in: lower...upper / max(y, 1))
         x = quotient * y
         answer = quotient
     }
