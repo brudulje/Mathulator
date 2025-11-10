@@ -72,7 +72,6 @@ extension GameSession {
                         self.difficulty += 1 // Crescendo magic
                         self.currentStreak = 0
                     }
-                    return
                 }
             } else {
                 // User failed problem in crescendo mode; crescendo mode done!
