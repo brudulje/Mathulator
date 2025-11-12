@@ -32,6 +32,9 @@ func generateProblem(difficulty: Double, op: Operator) -> MathProblem {
 //    let (lower, upper) = interval(for: difficulty)
     let x: Int
     let y: Int
+    let z: Int
+    let w: Int
+    let v: Int
     let answer: Int
     
     switch op {
@@ -52,11 +55,14 @@ func generateProblem(difficulty: Double, op: Operator) -> MathProblem {
         answer = x * y
     case .div:
         let (lower, _) = interval(for: difficulty)
-        let (_, upper) = interval(for: 1.5 * difficulty)
-        y = Int.random(in: 2...Int(difficulty))
-        let quotient = Int.random(in: lower...upper / max(y, 1))
-        x = quotient * y
-        answer = quotient
+        let (_, upper) = interval(for: 1.3 * difficulty)
+        z = Int.random(in: lower...upper)
+        w = Int.random(in: 2...Int(difficulty))
+        v = max(z, w)
+        y = min(z, w)
+        answer = v / max(y, 1)
+        x = answer * y
+//        print("interval", lower, upper, "numbers", z, w, "sorted", v, y, "done", x, answer)
     }
     
     return MathProblem(num1: x, num2: y, answer: answer, symbol: op.rawValue)
