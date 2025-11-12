@@ -44,10 +44,6 @@ struct HighScoreDetailView: View {
                         })//.opacity(0.4) )
                         .foregroundColor(Color.white)
                         .clipShape(RoundedRectangle(cornerRadius: 5))
-                    //                }
-                    //                HStack {
-                    
-                    //                    Text("Difficulty:").responsiveFont(.title2)
                     Spacer()
                     Text("\(difficulty)")
                         .frame(width: geometry.size.width * 0.21, height: geometry.size.width * 0.13, alignment: .center)
@@ -71,12 +67,6 @@ struct HighScoreDetailView: View {
                         .padding(4)
                         .background(HighScoresView.highScoreBackgroundColor(for: score))
                         .clipShape(RoundedRectangle(cornerRadius: 5))
-                    
-                    //                Text("Operator: \(op.rawValue)")
-                    
-                    //                let score = highScores.highScore(for: difficulty, op: op)
-                    //                Text("Current Streak: \(score)")
-                    //                    .responsiveFont(.largeTitle)
                 }
                 
                 HStack{
