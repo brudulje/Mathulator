@@ -68,10 +68,16 @@ extension GameSession {
                 currentStreak += 1
                 if problemCount.isMultiple(of: crescendoProblemsPerDifficulty) {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+//                        print("Correct! Updating passFailMarkList and currentStreak")
                         self.passFailMarkList.append(isCorrect)
-                        self.difficulty += 1 // Crescendo magic
                         self.currentStreak = 0
+//                        print("Updating difficulty")
+                        self.difficulty += 1 // Crescendo magic
+                        self.userInput = ""
+//                        print("Making first problem with new difficulty")
+                        self.newProblem()
                     }
+                    return
                 }
             } else {
                 // User failed problem in crescendo mode; crescendo mode done!
@@ -84,6 +90,7 @@ extension GameSession {
         
         // Whatever the mode is, create a new problem
         userInput = ""
+//        print("Making new problem for whatever mode this is")
         newProblem()
     }
     
