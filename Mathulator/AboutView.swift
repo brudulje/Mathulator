@@ -38,6 +38,9 @@ struct AboutView: View {
                         Text("The scoreboard will keep track of your maximum streak for each discipline and difficulty. Once you solve a problem and get a streak of 1, the background in the trophy overview goes blue. Reaching streaks of 5, 12, or 20 will earn you a new trophy.")
                             .multilineTextAlignment(.leading)
                         
+                        Text("Crescendo mode").font(.headline)
+                        Text("Crescendo mode starts out easy, but will make the problems harder as you solve more of them. Solve 3 problems at each difficulty. How many can you solve in a row without making a single mistake? Your best score ever will be kept safe in the top score list.")
+                        
                         Text("""
                         Version \(version) \nCreated by Joachim Seland Graff
                         """)
