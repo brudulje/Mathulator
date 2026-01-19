@@ -56,6 +56,7 @@ struct ContentView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 5))
                             .padding(.trailing, 6)
                     }
+                    .buttonStyle(.plain)
                 }
                 .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.10)
                 //                    .background(Color.green)  // debugging
@@ -117,7 +118,8 @@ struct ContentView: View {
                 )
                 .frame(width: geometry.size.width,
                        height: geometry.size.height * 0.1)
-            }
+                
+            } // end main VStack
             .frame(maxHeight: .infinity, alignment: .top)
             .background(Color.blue)
             .onAppear {

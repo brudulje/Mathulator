@@ -45,6 +45,7 @@ struct CrescendoStartView: View {
                     Button("Close") {
                         dismiss()
                     }
+                    .buttonStyle(.plain)
                 }
             }
             .padding()

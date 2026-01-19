@@ -28,6 +28,7 @@ struct HighScoreDetailView: View {
                         Button("Close") {
                             dismiss()
                         }
+                        .buttonStyle(.plain)
                     }
                     
                 }
@@ -85,7 +86,8 @@ struct HighScoreDetailView: View {
                         .background(Color.red.opacity(0.8))
                         .foregroundColor(.white)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
-                }
+}
+                .buttonStyle(.plain)
                 
                 Spacer()
             }

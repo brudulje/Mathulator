@@ -48,6 +48,7 @@ struct CrescendoModeView: View {
                         isPresented = false
                     }
                     .padding(.trailing, 10)
+                    .buttonStyle(.plain)
                 }
                 
                 // History

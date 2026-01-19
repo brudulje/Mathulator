@@ -55,6 +55,7 @@ struct AboutView: View {
                         Button("Close") {
                             dismiss()
                         }
+                        .buttonStyle(.plain)
                     }
                 }
             }

@@ -72,6 +72,7 @@ struct HighScoresView: View {
                                                 .background(HighScoresView.highScoreBackgroundColor(for: score))
                                                 .clipShape(RoundedRectangle(cornerRadius: 5))
                                         }
+                                         .buttonStyle(.plain)
                                     }
                                 }
                             }
@@ -86,6 +87,8 @@ struct HighScoresView: View {
                         Button("Close") {
                             dismiss()
                         }
+                        .buttonStyle(.plain)
+
                     }
                 }
                 .sheet(item: $selectedDetail) { detail in

@@ -87,6 +87,8 @@ struct CrescendoScoresView: View {
                         Button("Close") {
                             dismiss()
                         }
+                        .buttonStyle(.plain)
+
                     }
                 }
 

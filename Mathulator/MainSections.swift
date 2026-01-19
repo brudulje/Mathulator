@@ -58,12 +58,12 @@ struct HistoryView: View {
                     let maxSymbols = 24
                     let filledSymbols = Array(symbols.suffix(maxSymbols))
                     let paddedSymbols = filledSymbols + Array(repeating: "questionmark.circle.fill", count: maxSymbols - filledSymbols.count)
-//                    if mode == .crescendo {
-//                        scoreSymbols = session.history
-//                            .suffix(3)
-//                            .map { $0.correct ? "checkmark.circle.fill" : "xmark.circle.fill" }
-//                            .joined(),
-//                    }
+                    //                    if mode == .crescendo {
+                    //                        scoreSymbols = session.history
+                    //                            .suffix(3)
+                    //                            .map { $0.correct ? "checkmark.circle.fill" : "xmark.circle.fill" }
+                    //                            .joined(),
+                    //                    }
                     VStack(spacing: geometry.size.height * 0.02) { // example scaling
                         ForEach(0..<3, id: \.self) { row in
                             HStack(spacing: geometry.size.width * 0.01) {
@@ -93,6 +93,7 @@ struct HistoryView: View {
                                 .background(Color.white.opacity(0.4))
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
                         }
+                        .buttonStyle(.plain)
                         .sheet(isPresented: $showHighScoreDetail) {
                                 let scoreDetail = HighScoreDetailView(
                                     difficulty: Int(difficulty),
@@ -187,14 +188,13 @@ struct ProblemDisplayView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                     Button(action: onBackspace) {
                         Text("⌫")
-                            .frame(maxWidth: geometry.size.width * 0.20)
-                        //                        ,
-                        //                                   maxHeight: geometry.size.height * 0.05)
                             .responsiveFont(.title)
-                            .background(Color.black.opacity(0.8))
                             .foregroundColor(.white)
+                            .frame(maxWidth: geometry.size.width * 0.20)
+                            .background(Color.black.opacity(0.8))
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                     }
+                    .buttonStyle(.plain)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -229,6 +229,8 @@ struct NumpadView: View {
                         .background(Color.white.opacity(0.4))
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
+                .buttonStyle(.plain)
+//                .contentShape(RoundedRectangle(cornerRadius: 10)) // ensures the full frame is tappable
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -247,8 +249,7 @@ struct NumpadView: View {
                 .background(Color.black.opacity(0.4))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
         }
-        //            .frame(width: geometry.size.width * 0.25, height: geometry.size.height * 0.08)
-        .contentShape(Rectangle()) // ensures the full frame is tappable
+        .buttonStyle(.plain)
     }
     
 }
@@ -267,15 +268,17 @@ struct DifficultySliderView: View {
                     .accentColor(.green)
                 Button (action: { difficulty += 1 }){
                     Text("\(Int(difficulty))")
-                        .frame(minWidth: geometry.size.width * 0.06)
                         .responsiveFont(.caption)
-                        .padding(6)
-                        .background(ContentView.difficultyColor(for: difficulty))
                         .foregroundColor(Color.black)
+                        .frame(minWidth: geometry.size.width * 0.10)
+                        .padding(.vertical, geometry.size.width * 0.02)
+                        .background(ContentView.difficultyColor(for: difficulty))
                         .animation(.easeInOut(duration: 0.3), value: difficulty)
                         .cornerRadius(10)
                         .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.white, lineWidth: 2))
                 }
+                .buttonStyle(.plain)
+//                .contentShape(Rectangle()) // ensures the full frame is tappable
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
@@ -325,8 +328,9 @@ struct OperatorSelectionView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .background(op == selectedOperator ? Color.white.opacity(0.4) : Color.black.opacity(0.4))
                         .foregroundColor(op == selectedOperator ? Color.black : Color.white)
-                    //                        .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
+                .buttonStyle(.plain)
+//                .contentShape(Rectangle()) // ensures the full frame is tappable
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
