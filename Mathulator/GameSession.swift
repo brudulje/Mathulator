@@ -157,11 +157,6 @@ extension GameSession {
         oldCrescendoRecord = oldRecord
         newCrescendoRecord = newRecord
         newRecordSet = didSetNewRecord
-        
-        history.removeAll()
-        passFailMarkList.removeAll()
-        userInput = ""
-        mode = .normal
     }
 }
 
