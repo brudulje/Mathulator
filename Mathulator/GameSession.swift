@@ -17,6 +17,9 @@ final class GameSession: ObservableObject {
         self.selectedOperator = selectedOperator
         self.highScores = highScores
         self.currentProblem = generateProblem(difficulty: startDifficulty, op: selectedOperator)
+        if mode == .crescendo {
+            resetCrescendoMarks()
+        }
         //        print("GameSession is now in mode: \(mode)")
     }
     
@@ -31,6 +34,13 @@ final class GameSession: ObservableObject {
     @Published var problemCount: Int = 0
     @Published var crescendoProblemsPerDifficulty = 3
     @Published var passFailMarkList: [Bool] = []
+    enum CrescendoMark: String { case correct = "\u{2705}"; case wrong = "\u{274C}"; case pending = "\u{2754}" }
+    @Published var crescendoMarks: [CrescendoMark] = []
+    @Published var correctCountAtDifficulty = 0
+
+    var crescendoMarksString: String {
+        crescendoMarks.map { $0.rawValue }.joined()
+    }
     @Published var showCrescendoSummary = false
     @Published var newRecordSet = false
     @Published var oldCrescendoRecord: Int? = nil
@@ -38,6 +48,11 @@ final class GameSession: ObservableObject {
 }
 
 extension GameSession {
+    func resetCrescendoMarks() {
+        crescendoMarks = Array(repeating: .pending, count: crescendoProblemsPerDifficulty)
+        correctCountAtDifficulty = 0
+    }
+
     func submitAnswer() {  // This is the function all modes should run.
         //        print("Got new input: \(userInput)")
         guard let guess = Int(userInput) else { return }
@@ -62,26 +77,29 @@ extension GameSession {
             )
             
         case .crescendo:
-            //            print("in crescendo mode")
             problemCount += 1
             if isCorrect {
                 currentStreak += 1
-                if problemCount.isMultiple(of: crescendoProblemsPerDifficulty) {
+                if let idx = crescendoMarks.firstIndex(of: .pending) {
+                    crescendoMarks[idx] = .correct
+                }
+                correctCountAtDifficulty += 1
+                if correctCountAtDifficulty == crescendoProblemsPerDifficulty {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-//                        print("Correct! Updating passFailMarkList and currentStreak")
-                        self.passFailMarkList.append(isCorrect)
+                        self.passFailMarkList.append(true)
                         self.currentStreak = 0
-//                        print("Updating difficulty")
                         self.difficulty += 1 // Crescendo magic
                         self.userInput = ""
-//                        print("Making first problem with new difficulty")
+                        self.resetCrescendoMarks()
                         self.newProblem()
                     }
                     return
                 }
             } else {
+                if let idx = crescendoMarks.firstIndex(of: .pending) {
+                    crescendoMarks[idx] = .wrong
+                }
                 // User failed problem in crescendo mode; crescendo mode done!
-                // Stop crescendo mode
                 endCrescendo(difficulty: Int(difficulty))
                 showCrescendoSummary = true // trigger modal
                 return
@@ -127,6 +145,7 @@ extension GameSession {
         passFailMarkList.removeAll()
         userInput = ""
         currentProblem = generateProblem(difficulty: difficulty, op: op)
+        resetCrescendoMarks()
     }
     
     func endCrescendo(difficulty: Int) {
@@ -145,3 +164,4 @@ extension GameSession {
         mode = .normal
     }
 }
+

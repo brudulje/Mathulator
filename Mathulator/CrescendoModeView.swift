@@ -55,7 +55,7 @@ struct CrescendoModeView: View {
                 HistoryView(
                     history: session.history,
                     markList: session.passFailMarkList,
-                    scoreSymbols: CrescendoModeView.scoreText(for: session.currentStreak),
+                    scoreSymbols: session.crescendoMarksString,
                     difficulty: session.difficulty,
                     selectedOperator: session.selectedOperator,
                     mode: .crescendo,
@@ -121,23 +121,6 @@ struct CrescendoModeView: View {
             } else {
                 summary
             }
-        }
-    }
-    
-    // MARK: Helpers
-    
-    static func scoreText(for score: Int) -> String {
-        switch score {
-        case 0:
-            return "\u{2754}\u{2754}\u{2754}"
-        case 1:
-            return "\u{2705}\u{2754}\u{2754}"
-        case 2:
-            return "\u{2705}\u{2705}\u{2754}"
-        case 3:
-            return "\u{2705}\u{2705}\u{2705}"
-        default:
-            return "\(score)"
         }
     }
 }
