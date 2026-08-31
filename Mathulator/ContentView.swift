@@ -141,7 +141,8 @@ struct ContentView: View {
                 }
             ) {
                 CrescendoModeView(isPresented: $presentingCrescendo,
-                                  selectedOperator: session.selectedOperator
+                                  selectedOperator: session.selectedOperator,
+                                  selectedLevel: session.crescendoLevel
                                   )
             }
             .sheet(isPresented: $showHighScores) {
@@ -170,8 +171,8 @@ struct ContentView: View {
                     }
                 }) {
                     let crescendo = CrescendoStartView(
-                        onStart: { selectedOp in
-                            session.startCrescendo(with: selectedOp)
+                        onStart: { selectedOp, level in
+                            session.startCrescendo(with: selectedOp, level: level)
                             showingCrescendoSetup = false
                             //                            presentingCrescendo = true
                         },
@@ -203,3 +204,4 @@ struct ContentView: View {
     }
     
 }
+

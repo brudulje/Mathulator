@@ -10,6 +10,7 @@ import SwiftUI
 struct CrescendoSummaryView: View {
     let difficulty: Int
     let selectedOperator: Operator
+    let level: CrescendoLevel
     let newRecordSet: Bool
     let oldRecord: Int?
     let newRecord: Int?
@@ -21,6 +22,7 @@ struct CrescendoSummaryView: View {
             VStack(spacing: 20) {
                 
                 Text("Operator: \(selectedOperator.rawValue)")
+                Text("Level: \(level.displayName)")
                 Text("Difficulty reached: \(difficulty)")
                 if newRecordSet {
                                 Text("🎉 New Record!")

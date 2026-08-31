@@ -48,34 +48,26 @@ struct CrescendoScoresView: View {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 12) {
                             
-//                            ForEach(CrescendoScores.operator, id: \.self) { operator in
+                            ForEach(CrescendoLevel.allCases, id: \.self) { level in
                                 HStack(spacing: 4) {
-                                    // Use custom colors for each row heading
-                                    Text("📈")
+                                    Text(level.symbol)
                                         .frame(width: geometry.size.width * firstColunmWidth, alignment: .center)
                                         .responsiveFont(.body)
                                         .padding(4)
                                         .foregroundColor(Color.black)
-//                                        .background(ContentView.difficultyColor(for: Double(difficulty)))
                                         .clipShape(RoundedRectangle(cornerRadius: 5))
-                                    
+
                                     ForEach(Operator.allCases, id: \.self) { op in
-                                        let score = crescendoScores.crescendoScore(op: op)
-//                                        let symbols = HighScoresView.trophyText(for: score)
-//                                        Button(action: {
-//                                            selectedDetail = ScoreDetail(difficulty: difficulty, op: op)
-//                                        }) {
-                                            Text("\(score)")
-                                                .frame(width: geometry.size.width * tableColumnsWidth)
-                                                .responsiveFont(.body)
-                                                .padding(4)
-                                                .background(ContentView.difficultyColor(for: Double(score)))
-//                                                .background(HighScoresView.highScoreBackgroundColor(for: score))
-                                                .clipShape(RoundedRectangle(cornerRadius: 5))
-//                                        }
+                                        let score = crescendoScores.crescendoScore(level: level, op: op)
+                                        Text("\(score)")
+                                            .frame(width: geometry.size.width * tableColumnsWidth)
+                                            .responsiveFont(.body)
+                                            .padding(4)
+                                            .background(ContentView.difficultyColor(for: Double(score)))
+                                            .clipShape(RoundedRectangle(cornerRadius: 5))
                                     }
                                 }
-//                            }
+                            }
                         }
                         .padding()
                     }

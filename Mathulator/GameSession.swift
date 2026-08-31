@@ -11,13 +11,15 @@ final class GameSession: ObservableObject {
     //    let mode: GameMode
     let highScores: HighScores  
     
-    init(mode: GameMode, startDifficulty: Double, selectedOperator: Operator, highScores: HighScores) {
+    init(mode: GameMode, startDifficulty: Double, selectedOperator: Operator, highScores: HighScores, crescendoLevel: CrescendoLevel = .hard) {
         self.mode = mode
         self.difficulty = startDifficulty
         self.selectedOperator = selectedOperator
         self.highScores = highScores
         self.currentProblem = generateProblem(difficulty: startDifficulty, op: selectedOperator)
         if mode == .crescendo {
+            self.crescendoLevel = crescendoLevel
+            self.remainingForgiveness = crescendoLevel.allowedMistakes
             resetCrescendoMarks()
         }
         //        print("GameSession is now in mode: \(mode)")
@@ -37,6 +39,8 @@ final class GameSession: ObservableObject {
     enum CrescendoMark: String { case correct = "\u{2705}"; case wrong = "\u{274C}"; case pending = "\u{2754}" }
     @Published var crescendoMarks: [CrescendoMark] = []
     @Published var correctCountAtDifficulty = 0
+    @Published var crescendoLevel: CrescendoLevel = .hard
+    @Published var remainingForgiveness: Int = CrescendoLevel.hard.allowedMistakes
 
     var crescendoMarksString: String {
         crescendoMarks.map { $0.rawValue }.joined()
@@ -83,25 +87,27 @@ extension GameSession {
                 if let idx = crescendoMarks.firstIndex(of: .pending) {
                     crescendoMarks[idx] = .correct
                 }
-                correctCountAtDifficulty += 1
-                if correctCountAtDifficulty == crescendoProblemsPerDifficulty {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                        self.passFailMarkList.append(true)
-                        self.currentStreak = 0
-                        self.difficulty += 1 // Crescendo magic
-                        self.userInput = ""
-                        self.resetCrescendoMarks()
-                        self.newProblem()
-                    }
-                    return
-                }
             } else {
                 if let idx = crescendoMarks.firstIndex(of: .pending) {
                     crescendoMarks[idx] = .wrong
                 }
-                // User failed problem in crescendo mode; crescendo mode done!
-                endCrescendo(difficulty: Int(difficulty))
-                showCrescendoSummary = true // trigger modal
+                remainingForgiveness -= 1
+                if remainingForgiveness <= 0 {
+                    endCrescendo(difficulty: Int(difficulty))
+                    showCrescendoSummary = true
+                    return
+                }
+            }
+
+            if !crescendoMarks.contains(.pending) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                    self.passFailMarkList.append(true)
+                    self.currentStreak = 0
+                    self.difficulty += 1 // Crescendo magic
+                    self.userInput = ""
+                    self.resetCrescendoMarks()
+                    self.newProblem()
+                }
                 return
             }
         }
@@ -137,8 +143,10 @@ extension GameSession {
         newProblem()
     }
     
-    func startCrescendo(with op: Operator) {
+    func startCrescendo(with op: Operator, level: CrescendoLevel) {
         mode = .crescendo
+        crescendoLevel = level
+        remainingForgiveness = level.allowedMistakes
         selectedOperator = op
         difficulty = DifficultyConfig.minDifficulty
         history.removeAll()
@@ -150,9 +158,9 @@ extension GameSession {
     
     func endCrescendo(difficulty: Int) {
         // FIXME: Use this to stop crescendo and revert to normal at last used difficulty
-        let oldRecord = CrescendoScores.shared.crescendoScore(op: selectedOperator) // get previous record
-        let didSetNewRecord = CrescendoScores.shared.updateIfHigher(difficulty: difficulty, op: selectedOperator)
-        let newRecord = CrescendoScores.shared.crescendoScore(op: selectedOperator) // get updated record
+        let oldRecord = CrescendoScores.shared.crescendoScore(level: crescendoLevel, op: selectedOperator)
+        let didSetNewRecord = CrescendoScores.shared.updateIfHigher(level: crescendoLevel, difficulty: difficulty, op: selectedOperator)
+        let newRecord = CrescendoScores.shared.crescendoScore(level: crescendoLevel, op: selectedOperator)
         
         oldCrescendoRecord = oldRecord
         newCrescendoRecord = newRecord

@@ -16,14 +16,15 @@ struct CrescendoModeView: View {
         selectedOperator: .add,
         highScores: HighScores.shared
     )
-    init(isPresented: Binding<Bool>, selectedOperator: Operator) {
+    init(isPresented: Binding<Bool>, selectedOperator: Operator, selectedLevel: CrescendoLevel) {
         _isPresented =  isPresented
         _session = StateObject(
             wrappedValue: GameSession(
                 mode: .crescendo,
                 startDifficulty: DifficultyConfig.minDifficulty,
                 selectedOperator: selectedOperator,   //  use whatever operator the parent sends
-                highScores: HighScores.shared
+                highScores: HighScores.shared,
+                crescendoLevel: selectedLevel
             )
         )
     }
@@ -105,6 +106,7 @@ struct CrescendoModeView: View {
             let summary = CrescendoSummaryView(
                 difficulty: Int(session.difficulty),
                 selectedOperator: session.selectedOperator,
+                level: session.crescendoLevel,
                 newRecordSet: session.newRecordSet,
                 oldRecord: session.oldCrescendoRecord,
                 newRecord: session.newCrescendoRecord,
@@ -124,3 +126,4 @@ struct CrescendoModeView: View {
         }
     }
 }
+

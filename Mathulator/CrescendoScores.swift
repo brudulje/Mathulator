@@ -16,46 +16,40 @@ class CrescendoScores: ObservableObject {
     
     private static let storageKey = "CrescendoScoreMatrix"
     
-    @Published var matrix: [Int] {
-        didSet {
-            save()
-        }
+    @Published var matrix: [[Int]] {
+        didSet { save() }
     }
     
     init() {
         if let data = UserDefaults.standard.data(forKey: Self.storageKey),
-           let decoded = try? JSONDecoder().decode([Int].self, from: data) {
+           let decoded = try? JSONDecoder().decode([[Int]].self, from: data) {
             self.matrix = decoded
         } else {
-            self.matrix = Array(repeating: 0, count: Self.operatorCount)
-//            , count: Self.difficulties.count)
+            self.matrix = Array(repeating: Array(repeating: 0, count: Self.operatorCount), count: CrescendoLevel.allCases.count)
         }
     }
     
-    func reset(op: Operator) {
-        guard let row = Operator.allCases.firstIndex(of: op)
-        else { return }
-        
-        matrix[row] = 0
+    func reset(level: CrescendoLevel, op: Operator) {
+        guard let levelRow = CrescendoLevel.allCases.firstIndex(of: level),
+              let opCol = Operator.allCases.firstIndex(of: op) else { return }
+        matrix[levelRow][opCol] = 0
     }
     
-    func updateIfHigher(difficulty: Int, op: Operator) -> Bool {
-        guard let row = Operator.allCases.firstIndex(of: op)
-        else { return false}
-        
-        if difficulty > matrix[row] {
-            matrix[row] = difficulty
+    func updateIfHigher(level: CrescendoLevel, difficulty: Int, op: Operator) -> Bool {
+        guard let levelRow = CrescendoLevel.allCases.firstIndex(of: level),
+              let opCol = Operator.allCases.firstIndex(of: op) else { return false }
+        if difficulty > matrix[levelRow][opCol] {
+            matrix[levelRow][opCol] = difficulty
             return true  // let caller know that score was better than last highest
         } else {
             return false
         }
     }
     
-    func crescendoScore( op: Operator) -> Int {
-        guard let row = Operator.allCases.firstIndex(of: op)
-        else { return 0 }
-        
-        return matrix[row]
+    func crescendoScore(level: CrescendoLevel, op: Operator) -> Int {
+        guard let levelRow = CrescendoLevel.allCases.firstIndex(of: level),
+              let opCol = Operator.allCases.firstIndex(of: op) else { return 0 }
+        return matrix[levelRow][opCol]
     }
     
     private func save() {
