@@ -89,12 +89,21 @@ struct CrescendoModeView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 15))
                 
                 Spacer()
-                // Difficulty display
-                DifficultyDisplayView(
-                    difficulty: $session.difficulty,
-                )
-                .padding(.horizontal)
-                .frame(width: geometry.size.width * 0.5, height: geometry.size.height * 0.15)
+                HStack {
+                    Spacer()
+                    // Difficulty display
+                    DifficultyDisplayView(
+                        difficulty: $session.difficulty
+                    )
+                    Spacer()
+                    // Show remaining lives / forgiveness hearts
+                    ForgivenessHeartsView(
+                        remaining: session.remainingForgiveness,
+                        total: session.crescendoLevel.allowedMistakes
+                    )
+                    .frame(width: geometry.size.width * 0.5, height: geometry.size.height * 0.05)
+                    .padding(.horizontal)
+                }
             }
             .frame(maxHeight: .infinity, alignment: .top)
             .background(Color.purple.opacity(0.7))
@@ -126,4 +135,64 @@ struct CrescendoModeView: View {
         }
     }
 }
+
+private struct ForgivenessHeartsView: View {
+    let remaining: Int
+    let total: Int
+
+    // Customize these if you want different colors
+    var availableFill: Color = .red
+    var spentFill: Color = .white.opacity(0.3)
+    var availableOutlineColor: Color = .black
+    var spentOutlineColor: Color = .white.opacity(0.7) // optionally darker to keep visibility
+
+    var body: some View {
+        GeometryReader { geo in
+            HStack(spacing: geo.size.width * 0.04) {
+                ForEach(0..<max(total, 0), id: \.self) { index in
+                    let isAvailable = index < remaining
+                    ZStack {
+                        // Fill
+                        Image(systemName: "heart.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundColor(isAvailable ? availableFill : spentFill)
+
+                        // Outline
+                        Image(systemName: "heart")
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundColor(isAvailable ? availableOutlineColor : spentOutlineColor)
+                    }
+                    .opacity(isAvailable ? 0.95 : 0.9)
+                    .accessibilityLabel(isAvailable ? "Life available" : "Life spent")
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+            .animation(.easeInOut(duration: 0.25), value: remaining)
+        }
+    }
+}
+//
+//private struct ForgivenessHeartsView: View {
+//    let remaining: Int
+//    let total: Int
+//    var body: some View {
+//        GeometryReader { geo in
+//            HStack(spacing: geo.size.width * 0.04) {
+//                ForEach(0..<max(total, 0), id: \.self) { index in
+//                    let isAvailable = index < remaining
+//                    Image(systemName: isAvailable ? "heart.fill" : "heart")
+//                        .resizable()
+//                        .scaledToFit()
+//                        .foregroundColor(isAvailable ? .red : .white)
+//                        .opacity(isAvailable ? 0.95 : 0.85)
+//                        .accessibilityLabel(isAvailable ? "Life available" : "Life spent")
+//                }
+//            }
+//            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+//            .animation(.easeInOut(duration: 0.25), value: remaining)
+//        }
+//    }
+//}
 
