@@ -42,6 +42,8 @@ struct AboutView: View {
                         Text("Crescendo mode starts out easy, but will make the problems harder as you solve more of them. Solve 3 problems at each difficulty. How many can you solve in a row without making a mistake? Your best score ever will be kept safe in the top score list.")
                         Text("Choose between 3 levels. Hard - first mistake ends the run. Medium - third mistake ends the run. Easy - fifth mistake ends the run.")
                         
+                        Text("Feedback").font(.headline)
+                        Text("Do you have feedback for the developers of this app? Tapping the 'Send Feedback' button in the menu will allow you to write an email to report bugs, suggest improvements or give any feedback you want to the developers behind the app.")
                         Text("""
                         Version \(version) \nCreated by Joachim Seland Graff
                         """)

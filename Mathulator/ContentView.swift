@@ -14,6 +14,8 @@ struct ContentView: View {
     @State private var showingCrescendoSetup = false
     @State private var presentingCrescendo = false
     @State private var showMedals = false
+    @State private var showFeedbackFallback = false
+    private let feedbackEmail = "omhimuland@gmail.com"
     
     @StateObject private var session = GameSession(
         mode: .normal,
@@ -46,6 +48,12 @@ struct ContentView: View {
                         }
                         Divider()
                         Button("ℹ About") { showAbout = true }
+                        Divider()
+                        FeedbackButton(
+                            appName: "Mathulator",
+                            feedbackEmail: feedbackEmail,
+                            onFallback: { showFeedbackFallback = true }
+                        )
                     } label: {
                         Text("☰")
                             .frame(width: geometry.size.width * 0.1,
@@ -57,6 +65,22 @@ struct ContentView: View {
                             .padding(.trailing, 6)
                     }
                     .buttonStyle(.plain)
+                    .alert("Unable to Open Email", isPresented: $showFeedbackFallback) {
+                        Button("Copy Email Address") {
+                            UIPasteboard.general.string = feedbackEmail
+                        }
+                        Button("Cancel", role: .cancel) {}
+                    } message: {
+                        Text(
+                            """
+                            Please send your feedback to:
+
+                            \(feedbackEmail)
+
+                            You can write the email manually.
+                            """
+                        )
+                    }
                 }
                 .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.10)
                 //                    .background(Color.green)  // debugging
