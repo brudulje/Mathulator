@@ -15,6 +15,7 @@ struct ContentView: View {
     @State private var presentingCrescendo = false
     @State private var showMedals = false
     @State private var showFeedbackFallback = false
+    @State private var savedNormalDifficulty: Double? = nil
     private let feedbackEmail = "omhimuland@gmail.com"
     
     @StateObject private var session = GameSession(
@@ -162,6 +163,10 @@ struct ContentView: View {
                 onDismiss: {
 //                    print("Dismissing full screen cover")
                     session.mode = .normal
+                    if let saved = savedNormalDifficulty {
+                        session.difficulty = saved
+                        savedNormalDifficulty = nil
+                    }
                 }
             ) {
                 CrescendoModeView(isPresented: $presentingCrescendo,
@@ -196,9 +201,9 @@ struct ContentView: View {
                 }) {
                     let crescendo = CrescendoStartView(
                         onStart: { selectedOp, level in
+                            savedNormalDifficulty = session.difficulty
                             session.startCrescendo(with: selectedOp, level: level)
                             showingCrescendoSetup = false
-                            //                            presentingCrescendo = true
                         },
                         highScores: HighScores.shared,
                         difficulty: $session.difficulty
