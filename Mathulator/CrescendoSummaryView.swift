@@ -16,6 +16,8 @@ struct CrescendoSummaryView: View {
     let newRecord: Int?
     @Binding var isPresented: Bool
     let onDismiss: () -> Void
+    var onStartCrescendo: (Operator, CrescendoLevel) -> Void = { _, _ in }
+    @State private var showStartAgain = false
     
     var body: some View {
         NavigationView {
@@ -34,7 +36,12 @@ struct CrescendoSummaryView: View {
                                 Text("Your best: \(newRecord ?? 0)")
                             }
 
-                Button("Continue") {
+                Button("Play again") {
+                    showStartAgain = true
+                }
+                .buttonStyle(.bordered)
+                
+                Button("Done") {
                     onDismiss()
                     isPresented = false
                 }
@@ -43,6 +50,28 @@ struct CrescendoSummaryView: View {
             .navigationTitle("Crescendo mode done")
             .navigationBarTitleDisplayMode(.inline)
             .padding()
+            .sheet(isPresented: $showStartAgain) {
+                let start = CrescendoStartView(
+                    onStart: { op, lvl in
+                        onStartCrescendo(op, lvl)
+                        showStartAgain = false
+                    },
+                    highScores: HighScores(),
+                    difficulty: .constant(Double(difficulty))
+                )
+                if #available(iOS 16.0, *) {
+                    start
+                        .presentationDetents(UIDevice.current.userInterfaceIdiom == .pad ? [.large] : [.medium])
+                        .presentationDragIndicator(.visible)
+                } else {
+                    start
+                }
+            }
+//                    .presentationDetents(UIDevice.current.userInterfaceIdiom == .pad ? [.large] :[.medium])
+//                    .presentationDragIndicator(.visible)
+               
+            }
         }
     }
-}
+//}
+

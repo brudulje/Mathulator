@@ -123,6 +123,10 @@ struct CrescendoModeView: View {
                 onDismiss: {
                     session.showCrescendoSummary = false
                     session.mode = .normal
+                },
+                onStartCrescendo: { op, lvl in
+                    session.startCrescendo(with: op, level: lvl)
+                    session.showCrescendoSummary = false
                 }
             )
                 .interactiveDismissDisabled(true)
@@ -195,4 +199,5 @@ private struct ForgivenessHeartsView: View {
 //        }
 //    }
 //}
+
 
