@@ -46,14 +46,12 @@ struct FeedbackButton: View {
     }
 
     private func sendFeedback() {
-        let version = Bundle.main.infoDictionary?[
-            "CFBundleShortVersionString"
-        ] as? String ?? "Unknown"
-
         let subject = "\(appName) feedback"
         let body = """
-        App version: \(version)
+        \(AppDiagnostics.report)
 
+        The above diagnostic information is helpful context for your feedback.
+        
         Feedback:
 
         """
