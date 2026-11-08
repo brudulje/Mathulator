@@ -17,7 +17,12 @@ struct ContentView: View {
     @State private var showFeedbackFallback = false
     @State private var savedNormalDifficulty: Double? = nil
     private let feedbackEmail = "omhimuland@gmail.com"
+    let info = Bundle.main.infoDictionary ?? [:]
     
+    let appName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
+            ?? Bundle.main.infoDictionary?["CFBundleName"] as? String
+            ?? "Unknown"
+    // TODO: Fix
     @StateObject private var session = GameSession(
         mode: .normal,
         startDifficulty: 11,
@@ -34,7 +39,7 @@ struct ContentView: View {
         GeometryReader { geometry in
             VStack(spacing: 7) {
                 // Header
-                HeaderView(title: "Mathulator",
+                HeaderView(title: "\(appName)",
                            mode: .normal,
                            showHighScores: $showHighScores,
                            showAbout: $showAbout,
@@ -51,7 +56,7 @@ struct ContentView: View {
                         Button("ℹ About") { showAbout = true }
                         Divider()
                         FeedbackButton(
-                            appName: "Mathulator",
+                            appName: "\(appName)",
                             feedbackEmail: feedbackEmail,
                             onFallback: { showFeedbackFallback = true }
                         )
